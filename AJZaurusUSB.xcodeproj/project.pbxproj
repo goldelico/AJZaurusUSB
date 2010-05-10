@@ -1,0 +1,543 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		EEE5C61A090B8E9400F97D14 /* Compile */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = EE4D234709858ABD00136A23 /* Build configuration list for PBXAggregateTarget "Compile" */;
+			buildPhases = (
+				EE8F6C560D787CD30096A370 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = Compile;
+			productName = Compile;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		EE0AD1610A9F39480042DD37 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
+		EE0AD16E0A9F39780042DD37 /* Driver.h in Headers */ = {isa = PBXBuildFile; fileRef = EE0AD16D0A9F39780042DD37 /* Driver.h */; };
+		EE0AD1790A9F48C30042DD37 /* Client.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE4572000A795A6700A7ACF7 /* Client.cpp */; };
+		EE0AD17A0A9F48C30042DD37 /* CRC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE4571F90A795A2500A7ACF7 /* CRC.cpp */; };
+		EE0AD17B0A9F48C30042DD37 /* Glue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE0A61350A9DE1B90042DD37 /* Glue.cpp */; };
+		EE0AD17C0A9F48C30042DD37 /* Logging.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE4572010A795A8200A7ACF7 /* Logging.cpp */; };
+		EE0AD17D0A9F48C30042DD37 /* Power.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE4572130A795AE900A7ACF7 /* Power.cpp */; };
+		EE0AD17E0A9F48C30042DD37 /* Provider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE4571FA0A795A3300A7ACF7 /* Provider.cpp */; };
+		EE0AD17F0A9F48CE0042DD37 /* CRC.h in Headers */ = {isa = PBXBuildFile; fileRef = EE0A96570A9E40490042DD37 /* CRC.h */; };
+		EE0AD1800A9F48CE0042DD37 /* Logging.h in Headers */ = {isa = PBXBuildFile; fileRef = EE0A96540A9E3FC00042DD37 /* Logging.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; lineEnding = 0; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		EE03E0EE092D1CBA00893140 /* README.rtfd */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; path = README.rtfd; sourceTree = "<group>"; };
+		EE0A61350A9DE1B90042DD37 /* Glue.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Glue.cpp; path = Sources/Glue.cpp; sourceTree = "<group>"; };
+		EE0A96540A9E3FC00042DD37 /* Logging.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Logging.h; path = Sources/Logging.h; sourceTree = "<group>"; };
+		EE0A96570A9E40490042DD37 /* CRC.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CRC.h; path = Sources/CRC.h; sourceTree = "<group>"; };
+		EE0AD16B0A9F39480042DD37 /* AJZaurusUSB.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AJZaurusUSB.kext; sourceTree = BUILT_PRODUCTS_DIR; };
+		EE0AD16C0A9F39480042DD37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EE0AD16D0A9F39780042DD37 /* Driver.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Driver.h; path = Sources/Driver.h; sourceTree = "<group>"; };
+		EE0AD2810AA02AC20042DD37 /* AJZaurusUSB.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = AJZaurusUSB.jpg; sourceTree = "<group>"; };
+		EE0AD2820AA02AD20042DD37 /* AJZaurusUSB.pmproj */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = AJZaurusUSB.pmproj; sourceTree = "<group>"; };
+		EE123DFF0808620400997671 /* COPYING */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = COPYING; sourceTree = "<group>"; };
+		EE123E000808620400997671 /* COPYING.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = COPYING.rtf; sourceTree = "<group>"; };
+		EE123E020808620400997671 /* HOWTO-MAKE */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "HOWTO-MAKE"; sourceTree = "<group>"; };
+		EE123E030808620400997671 /* makefile */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.make; path = makefile; sourceTree = "<group>"; };
+		EE123E050808620400997671 /* WELCOME.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = WELCOME.rtf; sourceTree = "<group>"; };
+		EE1441910FC598B90071828E /* Versions.def */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Versions.def; path = ../Versions.def; sourceTree = SOURCE_ROOT; };
+		EE1450EB0A14F39D00C93F94 /* HISTORY.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = HISTORY.rtf; sourceTree = "<group>"; };
+		EE4571F90A795A2500A7ACF7 /* CRC.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CRC.cpp; path = Sources/CRC.cpp; sourceTree = "<group>"; };
+		EE4571FA0A795A3300A7ACF7 /* Provider.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Provider.cpp; path = Sources/Provider.cpp; sourceTree = "<group>"; };
+		EE4572000A795A6700A7ACF7 /* Client.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Client.cpp; path = Sources/Client.cpp; sourceTree = "<group>"; };
+		EE4572010A795A8200A7ACF7 /* Logging.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Logging.cpp; path = Sources/Logging.cpp; sourceTree = "<group>"; };
+		EE4572130A795AE900A7ACF7 /* Power.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Power.cpp; path = Sources/Power.cpp; sourceTree = "<group>"; };
+		EE75D7F10B09D5E000601180 /* prepare.gdb */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.sh; path = prepare.gdb; sourceTree = "<group>"; };
+		EEE642BC0D7D530900DB8215 /* AJZaurusUSB.pmdoc */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AJZaurusUSB.pmdoc; sourceTree = "<group>"; };
+		F59C308D02C2AF4001000102 /* Kernel.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Kernel.framework; path = /System/Library/Frameworks/Kernel.framework; sourceTree = "<absolute>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EE0AD1640A9F39480042DD37 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		089C166AFE841209C02AAC07 /* AppleUSBCDCEthernet */ = {
+			isa = PBXGroup;
+			children = (
+				EE1450EB0A14F39D00C93F94 /* HISTORY.rtf */,
+				EE1441910FC598B90071828E /* Versions.def */,
+				EE0A612A0A9DE1650042DD37 /* Sources */,
+				F59C308D02C2AF4001000102 /* Kernel.framework */,
+				EE0AD2550AA02A750042DD37 /* Packaging */,
+				EE0AD2590AA02A8F0042DD37 /* Making */,
+				089C167CFE841241C02AAC07 /* Resources */,
+				19C28FB6FE9D52B211CA2CBB /* Products */,
+			);
+			name = AppleUSBCDCEthernet;
+			sourceTree = "<group>";
+		};
+		089C167CFE841241C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				EE0AD16C0A9F39480042DD37 /* Info.plist */,
+				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		19C28FB6FE9D52B211CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EE0AD16B0A9F39480042DD37 /* AJZaurusUSB.kext */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EE0A612A0A9DE1650042DD37 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				EE4572000A795A6700A7ACF7 /* Client.cpp */,
+				EE0A96570A9E40490042DD37 /* CRC.h */,
+				EE4571F90A795A2500A7ACF7 /* CRC.cpp */,
+				EE0AD16D0A9F39780042DD37 /* Driver.h */,
+				EE0A61350A9DE1B90042DD37 /* Glue.cpp */,
+				EE0A96540A9E3FC00042DD37 /* Logging.h */,
+				EE4572010A795A8200A7ACF7 /* Logging.cpp */,
+				EE4572130A795AE900A7ACF7 /* Power.cpp */,
+				EE4571FA0A795A3300A7ACF7 /* Provider.cpp */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		EE0AD2550AA02A750042DD37 /* Packaging */ = {
+			isa = PBXGroup;
+			children = (
+				EE0AD2810AA02AC20042DD37 /* AJZaurusUSB.jpg */,
+				EEE642BC0D7D530900DB8215 /* AJZaurusUSB.pmdoc */,
+				EE0AD2820AA02AD20042DD37 /* AJZaurusUSB.pmproj */,
+				EE123E000808620400997671 /* COPYING.rtf */,
+				EE03E0EE092D1CBA00893140 /* README.rtfd */,
+				EE123E050808620400997671 /* WELCOME.rtf */,
+			);
+			name = Packaging;
+			sourceTree = "<group>";
+		};
+		EE0AD2590AA02A8F0042DD37 /* Making */ = {
+			isa = PBXGroup;
+			children = (
+				EE123DFF0808620400997671 /* COPYING */,
+				EE123E020808620400997671 /* HOWTO-MAKE */,
+				EE123E030808620400997671 /* makefile */,
+				EE75D7F10B09D5E000601180 /* prepare.gdb */,
+			);
+			name = Making;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		EE0AD15E0A9F39480042DD37 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE0AD17F0A9F48CE0042DD37 /* CRC.h in Headers */,
+				EE0AD1800A9F48CE0042DD37 /* Logging.h in Headers */,
+				EE0AD16E0A9F39780042DD37 /* Driver.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		EE0AD15C0A9F39480042DD37 /* AJZaurusUSB */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EE0AD1670A9F39480042DD37 /* Build configuration list for PBXNativeTarget "AJZaurusUSB" */;
+			buildPhases = (
+				EE0AD15D0A9F39480042DD37 /* ShellScript */,
+				EE0AD15E0A9F39480042DD37 /* Headers */,
+				EE0AD1600A9F39480042DD37 /* Resources */,
+				EE0AD1620A9F39480042DD37 /* Sources */,
+				EE0AD1640A9F39480042DD37 /* Frameworks */,
+				EE0AD1650A9F39480042DD37 /* Rez */,
+				EE0AD1660A9F39480042DD37 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AJZaurusUSB;
+			productInstallPath = "$(SYSTEM_LIBRARY_DIR)/Extensions";
+			productName = AppleUSBCDCEthernet;
+			productReference = EE0AD16B0A9F39480042DD37 /* AJZaurusUSB.kext */;
+			productType = "com.apple.product-type.kernel-extension.iokit";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		089C1669FE841209C02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = EE4D234F09858ABD00136A23 /* Build configuration list for PBXProject "AJZaurusUSB" */;
+			compatibilityVersion = "Xcode 2.4";
+			hasScannedForEncodings = 1;
+			mainGroup = 089C166AFE841209C02AAC07 /* AppleUSBCDCEthernet */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EEE5C61A090B8E9400F97D14 /* Compile */,
+				EE0AD15C0A9F39480042DD37 /* AJZaurusUSB */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EE0AD1600A9F39480042DD37 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE0AD1610A9F39480042DD37 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXRezBuildPhase section */
+		EE0AD1650A9F39480042DD37 /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXRezBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		EE0AD15D0A9F39480042DD37 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "script=\"${SYSTEM_DEVELOPER_DIR}/ProjectBuilder Extras/Kernel Extension Support/KEXTPreprocess\";\nif [ -x \"$script\" ]; then\n    . \"$script\"\nfi";
+		};
+		EE0AD1660A9F39480042DD37 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "script=\"${SYSTEM_DEVELOPER_DIR}/ProjectBuilder Extras/Kernel Extension Support/KEXTPostprocess\";\nif [ -x \"$script\" ]; then\n    . \"$script\"\nfi\ncp -R build/Default/*.kext pkg";
+		};
+		EE8F6C560D787CD30096A370 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# shell script goes here\nopen -a Terminal cd .\nexit 0";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EE0AD1620A9F39480042DD37 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE0AD1790A9F48C30042DD37 /* Client.cpp in Sources */,
+				EE0AD17A0A9F48C30042DD37 /* CRC.cpp in Sources */,
+				EE0AD17B0A9F48C30042DD37 /* Glue.cpp in Sources */,
+				EE0AD17C0A9F48C30042DD37 /* Logging.cpp in Sources */,
+				EE0AD17D0A9F48C30042DD37 /* Power.cpp in Sources */,
+				EE0AD17E0A9F48C30042DD37 /* Provider.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C167DFE841241C02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C167EFE841241C02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		EE0AD1680A9F39480042DD37 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 0.2.8;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions";
+				KERNEL_MODULE = YES;
+				LIBRARY_SEARCH_PATHS = "";
+				MODULE_IOKIT = YES;
+				MODULE_NAME = "net.lucid-cake.driver.AJZaurusUSB";
+				MODULE_VERSION = 0.3.2;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = AJZaurusUSB;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = kext;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		EE0AD1690A9F39480042DD37 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 0.2.8;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_PEDANTIC = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions";
+				KERNEL_MODULE = YES;
+				LIBRARY_SEARCH_PATHS = "";
+				MODULE_IOKIT = YES;
+				MODULE_NAME = "net.lucid-cake.driver.AJZaurusUSB";
+				MODULE_VERSION = 0.3.2;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = AJZaurusUSB;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = kext;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		EE0AD16A0A9F39480042DD37 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions";
+				KERNEL_MODULE = YES;
+				LIBRARY_SEARCH_PATHS = "";
+				MODULE_IOKIT = YES;
+				MODULE_NAME = "net.lucid-cake.driver.AJZaurusUSB";
+				MODULE_VERSION = 0.3.2;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = AJZaurusUSB;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = kext;
+			};
+			name = Default;
+		};
+		EE4D234809858ABD00136A23 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 0.2.8;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Compile;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		EE4D234909858ABD00136A23 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 0.2.8;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_PEDANTIC = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Compile;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		EE4D234A09858ABD00136A23 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Compile;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Default;
+		};
+		EE4D235009858ABD00136A23 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Development;
+		};
+		EE4D235109858ABD00136A23 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Deployment;
+		};
+		EE4D235209858ABD00136A23 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Default;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EE0AD1670A9F39480042DD37 /* Build configuration list for PBXNativeTarget "AJZaurusUSB" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EE0AD1680A9F39480042DD37 /* Development */,
+				EE0AD1690A9F39480042DD37 /* Deployment */,
+				EE0AD16A0A9F39480042DD37 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		EE4D234709858ABD00136A23 /* Build configuration list for PBXAggregateTarget "Compile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EE4D234809858ABD00136A23 /* Development */,
+				EE4D234909858ABD00136A23 /* Deployment */,
+				EE4D234A09858ABD00136A23 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		EE4D234F09858ABD00136A23 /* Build configuration list for PBXProject "AJZaurusUSB" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EE4D235009858ABD00136A23 /* Development */,
+				EE4D235109858ABD00136A23 /* Deployment */,
+				EE4D235209858ABD00136A23 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 089C1669FE841209C02AAC07 /* Project object */;
+}
