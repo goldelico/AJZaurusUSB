@@ -77,8 +77,8 @@ extern UInt32 crc32_table[256];
 #define CRC32_FCS(fcs, c) (((fcs) >> 8) ^ crc32_table[((fcs) ^ (c)) & 0xff])
 
 /* fcs_memcpy32 - memcpy and calculate fcs
-* Perform a memcpy and calculate fcs using ppp 32bit CRC algorithm.
-*/ 
+ * Perform a memcpy and calculate fcs using ppp 32bit CRC algorithm.
+ */ 
 static inline UInt32 fcs_memcpy32(unsigned char *dp, unsigned char *sp, int len, UInt32 fcs)
 {   
     for (;len-- > 0; fcs = CRC32_FCS(fcs, *dp++ = *sp++));
@@ -86,8 +86,8 @@ static inline UInt32 fcs_memcpy32(unsigned char *dp, unsigned char *sp, int len,
 }
 
 /* fcs_pad32 - pad and calculate fcs
-* Pad and calculate fcs using ppp 32bit CRC algorithm.
-*/
+ * Pad and calculate fcs using ppp 32bit CRC algorithm.
+ */
 static inline UInt32 fcs_pad32(unsigned char *dp, int len, UInt32 fcs)
 {
     for (;len-- > 0; fcs = CRC32_FCS(fcs, *dp++ = '\0'));
@@ -95,8 +95,8 @@ static inline UInt32 fcs_pad32(unsigned char *dp, int len, UInt32 fcs)
 }
 
 /* fcs_compute32 - calculate fcs
-* Perform calculate fcs using ppp 32bit CRC algorithm.
-*/
+ * Perform calculate fcs using ppp 32bit CRC algorithm.
+ */
 static inline UInt32 fcs_compute32(unsigned char *sp, int len, UInt32 fcs)
 {
     for (;len-- > 0; fcs = CRC32_FCS(fcs, *sp++));

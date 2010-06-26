@@ -24,7 +24,7 @@
  with same name as enclosing class" will be issued. This warning can be ignored.
  
  Copyright:		Copyright 2002, 2003 Andreas Junghans
- Copyright 2004-2006 H. Nikolaus Schaller
+ Copyright 2004-2010 H. Nikolaus Schaller
  
  Disclaimer:		This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -108,23 +108,23 @@ void net_lucid_cake_driver_AJZaurusUSB::commReadComplete(void *obj, void *param,
         
         // Now look at the state stuff
         
-        LogData(kUSBAnyDirn, dLen, me->fCommPipeBuffer);
+ //       LogData(kUSBAnyDirn, dLen, me->fCommPipeBuffer);
         
         notif = me->fCommPipeBuffer[1];
         if (dLen > 7)
             {
             switch(notif)
                 {
-                case kNetwork_Connection:
+					case kNetwork_Connection:
                     me->fLinkStatus = me->fCommPipeBuffer[2];
                     IOLog("AJZaurusUSB::commReadComplete - kNetwork_Connection - link Status %d\n", me->fLinkStatus);
                     break;
-                case kConnection_Speed_Change:				// In you-know-whose format
+					case kConnection_Speed_Change:				// In you-know-whose format
                     me->fUpSpeed = USBToHostLong(*((UInt32 *)&me->fCommPipeBuffer[8]));
                     me->fDownSpeed = USBToHostLong(*((UInt32 *)&me->fCommPipeBuffer[13]));
                     IOLog("AJZaurusUSB::commReadComplete - kConnection_Speed_Change up=%lu down=%lu\n", me->fUpSpeed, me->fDownSpeed);
                     break;
-                default:
+					default:
                     IOLog("AJZaurusUSB::commReadComplete - Unknown notification: %d\n", notif);
                     break;
                 }
@@ -141,12 +141,12 @@ void net_lucid_cake_driver_AJZaurusUSB::commReadComplete(void *obj, void *param,
     if (rc != kIOReturnAborted)
         {
 		ior = me->fCommPipe->Read(me->fCommPipeMDP,
-							5000,	// 5 seconds until timeout
-							5000,
-							me->fCommPipeMDP->getLength(),
-							&me->fCommCompletionInfo,
-							NULL);
-//        ior = me->fCommPipe->Read(me->fCommPipeMDP, &me->fCommCompletionInfo, NULL);
+								  5000,	// 5 seconds until timeout
+								  5000,
+								  me->fCommPipeMDP->getLength(),
+								  &me->fCommCompletionInfo,
+								  NULL);
+		
         if (ior != kIOReturnSuccess)
             {
             IOLog("AJZaurusUSB::commReadComplete - Failed to queue next read: %d %s\n", ior, me->stringFromReturn(ior));
@@ -159,7 +159,7 @@ void net_lucid_cake_driver_AJZaurusUSB::commReadComplete(void *obj, void *param,
 										  me->fCommPipeMDP->getLength(),
 										  &me->fCommCompletionInfo,
 										  NULL);
-//                ior = me->fCommPipe->Read(me->fCommPipeMDP, &me->fCommCompletionInfo, NULL);
+				
                 if (ior != kIOReturnSuccess)
                     {
                     IOLog("AJZaurusUSB::commReadComplete - Failed, read dead: %d %s\n", ior, me->stringFromReturn(ior));
@@ -204,47 +204,47 @@ void net_lucid_cake_driver_AJZaurusUSB::dataReadComplete(void *obj, void *param,
 #if 0
         IOLog("AJZaurusUSB::dataReadComplete - len=%lu\n", dLen);
 #endif   
-        LogData(kUSBIn, dlen, me->fPipeInBuffer);
+//        LogData(kUSBIn, dlen, me->fPipeInBuffer);
         me->receivePacket(me->fPipeInBuffer, dLen);	// Move the incoming bytes up the stack
         } 
     else
         { // some error
 #if 1
-        if(rc == kIOUSBPipeStalled)
-            {
-			IOLog("AJZaurusUSB::dataReadComplete - err=kIOUSBPipeStalled\n");
-            // rc = me->clearPipeStall(me->fInPipe);
-            rc = me->fInPipe->ClearPipeStall(true);
-            if(rc != kIOReturnSuccess)
-                IOLog("AJZaurusUSB::dataReadComplete - clear pipe stall failed: %d %s\n", rc, me->fDataInterface->stringFromReturn(rc));
-            }
-		else if(rc == kIOUSBTransactionTimeout)
-			{
-			IOLog("AJZaurusUSB::dataReadComplete - Timeout err: %d %s\n", rc, me->fDataInterface->stringFromReturn(rc));
-            rc = me->fInPipe->ClearPipeStall(true);
-            if(rc != kIOReturnSuccess)
-                IOLog("AJZaurusUSB::dataReadComplete - clear pipe stall failed: %d %s\n", rc, me->fDataInterface->stringFromReturn(rc));
-			}
-		else
-			IOLog("AJZaurusUSB::dataReadComplete - IO err: %d %s\n", rc, me->fDataInterface->stringFromReturn(rc));
+			if(rc == kIOUSBPipeStalled)
+				{
+				IOLog("AJZaurusUSB::dataReadComplete - err=kIOUSBPipeStalled\n");
+				// rc = me->clearPipeStall(me->fInPipe);
+				rc = me->fInPipe->ClearPipeStall(true);
+				if(rc != kIOReturnSuccess)
+					IOLog("AJZaurusUSB::dataReadComplete - clear pipe stall failed: %d %s\n", rc, me->fDataInterface->stringFromReturn(rc));
+				}
+			else if(rc == kIOUSBTransactionTimeout)
+				{
+				IOLog("AJZaurusUSB::dataReadComplete - Timeout err: %d %s\n", rc, me->fDataInterface->stringFromReturn(rc));
+				rc = me->fInPipe->ClearPipeStall(true);
+				if(rc != kIOReturnSuccess)
+					IOLog("AJZaurusUSB::dataReadComplete - clear pipe stall failed: %d %s\n", rc, me->fDataInterface->stringFromReturn(rc));
+				}
+			else
+				IOLog("AJZaurusUSB::dataReadComplete - IO err: %d %s\n", rc, me->fDataInterface->stringFromReturn(rc));
 #endif
         }
-
+	
     // Queue the next read
-
+	
 	ior = me->fInPipe->Read(me->fPipeInMDP,
-							  10000,	// 10 seconds until timeout
-							  10000,
-							  me->fPipeInMDP->getLength(),
-							  &me->fReadCompletionInfo,
-							  NULL);
-//    ior = me->fInPipe->Read(me->fPipeInMDP, &me->fReadCompletionInfo, NULL);
+							10000,	// 10 seconds until timeout
+							10000,
+							me->fPipeInMDP->getLength(),
+							&me->fReadCompletionInfo,
+							NULL);
+	
     if(ior != kIOReturnSuccess)
         {
         IOLog("AJZaurusUSB::dataReadComplete - Failed to queue read: %d %s\n", ior, me->fDataInterface->stringFromReturn(rc));
         if(ior == kIOUSBPipeStalled)
             {
-//			IOLog("AJZaurusUSB::dataReadComplete - err=kIOUSBPipeStalled\n");
+			//			IOLog("AJZaurusUSB::dataReadComplete - err=kIOUSBPipeStalled\n");
             me->fInPipe->ClearPipeStall(true);
 			ior = me->fInPipe->Read(me->fPipeInMDP,
 									10000,	// 10 seconds until timeout
@@ -252,7 +252,7 @@ void net_lucid_cake_driver_AJZaurusUSB::dataReadComplete(void *obj, void *param,
 									me->fPipeInMDP->getLength(),
 									&me->fReadCompletionInfo,
 									NULL);
-//            ior = me->fInPipe->Read(me->fPipeInMDP, &me->fReadCompletionInfo, NULL);
+			
             if(ior != kIOReturnSuccess)
                 {
                 IOLog("AJZaurusUSB::dataReadComplete - Failed again, read dead: %d %s\n", ior, me->fDataInterface->stringFromReturn(rc));
@@ -260,7 +260,7 @@ void net_lucid_cake_driver_AJZaurusUSB::dataReadComplete(void *obj, void *param,
                 }
             }
         }
-
+	
 } /* end dataReadComplete */
 
 /****************************************************************************************************/
@@ -281,9 +281,7 @@ void net_lucid_cake_driver_AJZaurusUSB::dataReadComplete(void *obj, void *param,
 void net_lucid_cake_driver_AJZaurusUSB::dataWriteComplete(void *obj, void *param, IOReturn rc, UInt32 remaining)
 {
     net_lucid_cake_driver_AJZaurusUSB	*me = (net_lucid_cake_driver_AJZaurusUSB *)obj;
-    //mbuf_t		m;
     //UInt32		pktLen = 0;
-    //UInt32		numbufs = 0;
     UInt32		poolIndx;
     SInt32		dataCount = 0;
     bool		stalled = FALSE;
@@ -318,7 +316,7 @@ void net_lucid_cake_driver_AJZaurusUSB::dataWriteComplete(void *obj, void *param
         // FIXME: what do we do with the buffer?
         if (rc != kIOReturnAborted)
             {
-       //     rc = me->clearPipeStall(me->fOutPipe);
+			
             rc = me->fOutPipe->ClearPipeStall(true);
             if (rc != kIOReturnSuccess)
                 {
@@ -331,7 +329,6 @@ void net_lucid_cake_driver_AJZaurusUSB::dataWriteComplete(void *obj, void *param
         IOLog("AJZaurusUSB:dataWriteComplete - trying to revive a stalled queue\n");
         me->fTransmitQueue->service(IOBasicOutputQueue::kServiceAsync);	// revive a stalled transmit queue
         }
- // me->fTransmitQueue->service();	// always revive a stalled queue
     
     return;
     
@@ -418,46 +415,46 @@ void net_lucid_cake_driver_AJZaurusUSB::statsWriteComplete(void *obj, void *para
             currStat = STREQ->wValue;
             switch(currStat)
                 {
-                case kXMIT_OK_REQ:
+					case kXMIT_OK_REQ:
                     me->fpNetStats->outputPackets = USBToHostLong(me->fStatValue);
                     break;
-                case kRCV_OK_REQ:
+					case kRCV_OK_REQ:
                     me->fpNetStats->inputPackets = USBToHostLong(me->fStatValue);
                     break;
-                case kXMIT_ERROR_REQ:
+					case kXMIT_ERROR_REQ:
                     me->fpNetStats->outputErrors = USBToHostLong(me->fStatValue);
                     break;
-                case kRCV_ERROR_REQ:
+					case kRCV_ERROR_REQ:
                     me->fpNetStats->inputErrors = USBToHostLong(me->fStatValue);
                     break;
-                case kRCV_CRC_ERROR_REQ:
+					case kRCV_CRC_ERROR_REQ:
                     me->fpEtherStats->dot3StatsEntry.fcsErrors = USBToHostLong(me->fStatValue); 
                     break;
-                case kRCV_ERROR_ALIGNMENT_REQ:
+					case kRCV_ERROR_ALIGNMENT_REQ:
                     me->fpEtherStats->dot3StatsEntry.alignmentErrors = USBToHostLong(me->fStatValue);
                     break;
-                case kXMIT_ONE_COLLISION_REQ:
+					case kXMIT_ONE_COLLISION_REQ:
                     me->fpEtherStats->dot3StatsEntry.singleCollisionFrames = USBToHostLong(me->fStatValue);
                     break;
-                case kXMIT_MORE_COLLISIONS_REQ:
+					case kXMIT_MORE_COLLISIONS_REQ:
                     me->fpEtherStats->dot3StatsEntry.multipleCollisionFrames = USBToHostLong(me->fStatValue);
                     break;
-                case kXMIT_DEFERRED_REQ:
+					case kXMIT_DEFERRED_REQ:
                     me->fpEtherStats->dot3StatsEntry.deferredTransmissions = USBToHostLong(me->fStatValue);
                     break;
-                case kXMIT_MAX_COLLISION_REQ:
+					case kXMIT_MAX_COLLISION_REQ:
                     me->fpNetStats->collisions = USBToHostLong(me->fStatValue);
                     break;
-                case kRCV_OVERRUN_REQ:
+					case kRCV_OVERRUN_REQ:
                     me->fpEtherStats->dot3StatsEntry.frameTooLongs = USBToHostLong(me->fStatValue);
                     break;
-                case kXMIT_TIMES_CARRIER_LOST_REQ:
+					case kXMIT_TIMES_CARRIER_LOST_REQ:
                     me->fpEtherStats->dot3StatsEntry.carrierSenseErrors = USBToHostLong(me->fStatValue);
                     break;
-                case kXMIT_LATE_COLLISIONS_REQ:
+					case kXMIT_LATE_COLLISIONS_REQ:
                     me->fpEtherStats->dot3StatsEntry.lateCollisions = USBToHostLong(me->fStatValue);
                     break;
-                default:
+					default:
                     IOLog("AJZaurusUSB::statsWriteComplete - Invalid stats code (currstat=%d): %d\n", currStat, rc);
                     break;
                 }
@@ -563,8 +560,8 @@ bool net_lucid_cake_driver_AJZaurusUSB::createNetworkInterface()
     
     if (!attachInterface((IONetworkInterface **)&fNetworkInterface, true))
         {	
-        IOLog("AJZaurusUSB::createNetworkInterface - attachInterface failed\n");      
-        return false;
+			IOLog("AJZaurusUSB::createNetworkInterface - attachInterface failed\n");      
+			return false;
         }
     
     // Ready to service interface requests

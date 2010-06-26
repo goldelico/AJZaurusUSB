@@ -130,7 +130,7 @@ ARCH := i386
 #
 # use 'make enable-kdb' to enable debugging, reboot debug machine and 'make gdb'
 #
-# please refer to http://developer.apple.com/documentation/Darwin/Conceptual/KEXTConcept/KEXTConceptDebugger/hello_debugger.html
+# please refer to http://developer.apple.com/mac/library/documentation/Darwin/Conceptual/KEXTConcept/KEXTConceptIntro/introduction.html
 #
 
 # same user id on debug machine
@@ -142,13 +142,13 @@ USER := $(USER)
 sudo:
 	@echo "*** reset sudo timeout ***"
 	@echo "first password is for authentication of debug ssh access, second one is for debug sudo"
-	ssh $(USER)@$(TARGET) sudo -v	# update timestamp
+	ssh -t $(USER)@$(TARGET) sudo -v	# update timestamp
 
 # enable kernel debugging on debug machine (and switch a Core2 Duo to single processor mode)
 enable-kdb: sudo
-	open http://developer.apple.com/documentation/Darwin/Conceptual/KEXTConcept/KEXTConceptDebugger/hello_debugger.html
+	open "http://developer.apple.com/mac/library/documentation/Darwin/Conceptual/KEXTConcept/KEXTConceptDebugger/debug_tutorial.html#//apple_ref/doc/uid/20002367-CHDIHFDI"
 	ssh $(USER)@$(TARGET) sh -c 'cd; cat >~/.ssh/authorized_keys' <~/.ssh/id_rsa.pub
-	ssh $(USER)@$(TARGET) sh -c 'cd; sudo nvram boot-args="cpus=1 debug=0x14e"'
+	ssh $(USER)@$(TARGET) sh -c 'cd; sudo nvram boot-args="debug=0xd4e kdp_match_name=firewire _panic_ip=1.2.3.4 cpus=1"'
 	@echo "*** reboot target machine to activate changes ***"
 
 # disable kernel debugging on debug machine
@@ -163,44 +163,29 @@ copy2target: sudo
 	@echo "next password is for authentication of debug ssh access; may also ask for sudo password on debug machine"
 	(cd pkg && tar czpf - AJZaurusUSB.kext) | ssh $(USER)@$(TARGET) sh -c 'cd; cd ~ && sudo rm -rf AJZaurusUSB.kext && tar xzf - && sudo chown -R root:wheel ~/AJZaurusUSB.kext && sudo chmod -R go-w ~/AJZaurusUSB.kext'
 			
-getsymtab: copy2target
-	@echo "*** create symbol files, fetch from debug machine ***"
-	@echo "next password is for authentication of debug ssh access"
-	ssh $(USER)@$(TARGET) sh -c 'cd; mkdir -p /tmp/AJZaurusUSB && sudo kextload -lvs /tmp/AJZaurusUSB ~/AJZaurusUSB.kext'
-	@mkdir -p symbols
-	ssh $(USER)@$(TARGET) sh -c 'cd; cd /tmp/AJZaurusUSB && tar czf - .' | (cd symbols && tar xvzf - -m)
+getsymtab:
+#	@echo "*** create symbol files, fetch from debug machine ***"
+#	@echo "next password is for authentication of debug ssh access"
+#	ssh $(USER)@$(TARGET) sh -c 'cd; mkdir -p /tmp/AJZaurusUSB && sudo kextload -lvs /tmp/AJZaurusUSB ~/AJZaurusUSB.kext'
+#	@mkdir -p symbols
+#	ssh $(USER)@$(TARGET) sh -c 'cd; cd /tmp/AJZaurusUSB && tar czf - .' | (cd symbols && tar xvzf - -m)
 
-loadremote: sudo
+
+loadremote: copy2target
 	@echo "*** finally load/match driver on remote side ***"
 	@echo "next password is for authentication of debug ssh access"
-	ssh $(USER)@$(TARGET) sudo /bin/bash -c 'cd; kextload -m ~/AJZaurusUSB.kext'
+	ssh $(USER)@$(TARGET) /bin/bash -c 'cd; sudo kextload ~/AJZaurusUSB.kext; kextstat | fgrep AJZaurusUSB'
 
 # launch a complete debugging session
-gdb:
-	@echo "*** launch and attach debugger ***"
-	@( echo make getsymtab loadremote; \
-		echo add-symbol-file symbols/net.lucid-cake.driver.AJZaurusUSB.sym; \
-		echo add-symbol-file symbols/com.apple.iokit.IONetworkingFamily.sym; \
-		echo add-symbol-file symbols/com.apple.iokit.IOUSBFamily.sym; \
-		echo add-symbol-file symbols/com.apple.kpi.bsd.sym; \
-		echo add-symbol-file symbols/com.apple.kpi.iokit.sym; \
-		echo add-symbol-file symbols/com.apple.kpi.libkern.sym; \
-		echo add-symbol-file symbols/com.apple.kpi.mach.sym; \
-		echo add-symbol-file symbols/com.apple.kpi.unsupported.sym; \
+gdb: getsymtab
+	@echo "*** launch and attach kernel debugger ***"
+#	open "/Volumes/KernelDebugKit/Kernel Debug Kit Read Me.html"
+	fwkdp&	# run firewire KDP debugging proxy (unless already running)
+	@( echo source /Volumes/KernelDebugKit/kgmacros; \
 		echo target remote-kdp; \
-		echo shell echo; \
-		echo shell echo; \
-		echo shell echo "Please break on debug machine into debugger and press Return on this machine (often NMI or Power button)."; \
-		echo shell echo "If successful, a console message will be shown on the screen."; \
-		echo shell read WAIT; \
-		echo shell echo "Attaching..."; \
-		echo attach $(TARGET); \
-		: echo break 'net_lucid_cake_driver_AJZaurusUSB::start(IOService *)'; \
-		echo shell echo "Remotely loading and starting the driver..."; \
-		echo "shell ssh $(USER)@$(TARGET) sh -c 'cd; sudo kextload -m ~/AJZaurusUSB.kext' &"; \
-		echo shell echo "Continuing the kernel..."; \
-		echo shell echo "If successful, the clock in the Status bar will continue to run."; \
-		echo continue ) >prepare.gdb
-
-	gdb -arch $(ARCH) -x prepare.gdb /mach_kernel
+		echo kdp-reattach localhost; \
+		echo set kext-symbol-file-path pkg; \
+		echo add-kext pkg/AJZaurusUSB.kext; \
+		) >prepare.gdb
+	gdb -arch $(ARCH) -x prepare.gdb /Volumes/KernelDebugKit/mach_kernel
 

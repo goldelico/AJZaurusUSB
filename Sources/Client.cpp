@@ -23,7 +23,7 @@
  with same name as enclosing class" will be issued. This warning can be ignored.
  
  Copyright:		Copyright 2002, 2003 Andreas Junghans
- Copyright 2004-2006 H. Nikolaus Schaller
+ Copyright 2004-2010 H. Nikolaus Schaller
  
  Disclaimer:		This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -86,13 +86,14 @@ UInt16	stats[13] = {	kXMIT_OK_REQ,
  .     start()
  .       open()
  .         enable()
- any of:
+ .             ((
  .             outputPacket()
  .             message()
  .             timeoutOccurred()
  .             [[wakeUp()]]
  .             [[putToSleep()]]
  .             terminate()
+ .             ))
  .         disable()
  .       close()
  .       message()
@@ -107,11 +108,16 @@ UInt16	stats[13] = {	kXMIT_OK_REQ,
  .        disable()
  .          [[putToSleep()]]
  .      setPowerState(0)
- . ----- sleeps -----
+ . ----- Mac sleeps -----
  .      setPowerState(1)
  .          [[resetDevice()]]
  .        enable()
  .             wakeUp()
+ 
+ NOTES:
+ * [[ abc ]] means that it is an internal method
+ * (( a b c )) means and sequence can occur
+ * putToSleep(), wakeUp() refer to the interface/attached device and not the Mac
  
  */
 
@@ -130,15 +136,7 @@ UInt16	stats[13] = {	kXMIT_OK_REQ,
 bool net_lucid_cake_driver_AJZaurusUSB::init(OSDictionary *properties)
 {
     UInt32	i;
-        
-#if USE_ELG
-    g.evLogBufp = NULL;
-    AllocateEventLog(kEvLogSize);
-    // ALERT(&g, g.evLogBufp, 'USBM', "net_lucid_cake_driver_AJZaurusUSB::init - event logging set up.");
-    
-    waitForService(resourceMatching("kdp"));
-#endif /* USE_ELG */
-    
+	
     IOLog("AJZaurusUSB(%p)::init\n", this);
 	IOSleep(20);
     
@@ -161,9 +159,9 @@ bool net_lucid_cake_driver_AJZaurusUSB::init(OSDictionary *properties)
     
     for (i=0; i<kOutBufPool; i++)
         { // initialize output buffer reference block
-        fPipeOutBuff[i].pipeOutMDP = NULL;
-        fPipeOutBuff[i].pipeOutBuffer = NULL;
-        fPipeOutBuff[i].m = NULL;
+			fPipeOutBuff[i].pipeOutMDP = NULL;
+			fPipeOutBuff[i].pipeOutBuffer = NULL;
+			fPipeOutBuff[i].m = NULL;
         }
     
     fLock = IOSimpleLockAlloc();
@@ -183,7 +181,7 @@ bool net_lucid_cake_driver_AJZaurusUSB::init(OSDictionary *properties)
 //
 /****************************************************************************************************/
 
-#if 0	// default method from superclass
+#if 0	// use default method from superclass
 bool net_lucid_cake_driver_AJZaurusUSB::attach(IOService *provider)
 {
 }
@@ -204,11 +202,11 @@ bool net_lucid_cake_driver_AJZaurusUSB::attach(IOService *provider)
 IOService *net_lucid_cake_driver_AJZaurusUSB::probe(IOService *provider, SInt32 *score)
 {
     IOService *res = super::probe(provider, score);
-    IOLog("Probing - super::score is %ld\n", *score);
-	IOSleep(20);
-	*score=1000000;
-	// i.e. determine if we can connect, i.e. find the right interfaces
-    return res;    
+    IOLog("AJZaurusUSB::probe - super::score is %ld\n", *score);	// is already 90000 (from Info.plist)
+	
+	// determine if we can really connect, i.e. find the right interfaces
+    
+	return res;    
 }
 
 /****************************************************************************************************/
@@ -273,36 +271,15 @@ bool net_lucid_cake_driver_AJZaurusUSB::start(IOService *provider)
         stop(provider);
         return false;
         }
-
-    if(!initForPM(provider))
-		{
-        IOLog("AJZaurusUSB::start - initForPM failed\n");
-		stop(provider);
-		return false;
-		}
-
-#if 0
-    IOLog("AJZaurusUSB::start - register as power controller\n");
-    // initialize superclass variables from IOService.h
-	fPowerState = kCDCPowerOnState;
-    PMinit();
-    // join the tree from IOService.h
-    provider->joinPMtree(this);
-    // register as controlling driver from IOService.h
-    if(registerPowerDriver( this, (IOPMPowerState *) ourPowerStates, kNumCDCStates ) != kIOReturnSuccess) 
-        {
-        IOLog("AJZaurusUSB::start - failed to register as power controller\n");
-        }
-#endif
-
+	
     IOLog("AJZaurusUSB::start - successful\n");
 #if 0	// fail for debugging
 	{
-        IOLog("AJZaurusUSB::start - fails for debugging purposes\n");
-        fpDevice->close(this);
-        fpDevice = NULL;
-        stop(provider);
-        return false;
+	IOLog("AJZaurusUSB::start - fails for debugging purposes\n");
+	fpDevice->close(this);
+	fpDevice = NULL;
+	stop(provider);
+	return false;
 	}
 #endif
     return true;
@@ -352,7 +329,7 @@ IOReturn net_lucid_cake_driver_AJZaurusUSB::enable(IONetworkInterface *netif)
     // If an interface client has previously enabled us,
     // and we know there can only be one interface client
     // for this driver, then simply return success.
-
+	
     if (fNetifEnabled)
         {
         IOLog("AJZaurusUSB::enable - already enabled\n");
@@ -376,9 +353,9 @@ IOReturn net_lucid_cake_driver_AJZaurusUSB::enable(IONetworkInterface *netif)
     fLinkStatus = 1;
     
     medium = IONetworkMedium::getMediumWithType(fMediumDict, mediumType);
-
+	
     IOLog("AJZaurusUSB::enable - medium type=%lu and medium=%p\n", mediumType, medium);
-
+	
     setLinkStatus(kIONetworkLinkActive | kIONetworkLinkValid, medium, 10 * 1000000);	// this should switch the Network status to green
     IOLog("AJZaurusUSB::enable - LinkStatus set\n");
     
@@ -409,8 +386,6 @@ IOReturn net_lucid_cake_driver_AJZaurusUSB::enable(IONetworkInterface *netif)
 //
 /****************************************************************************************************/
 
-// FIXME: we should try to receive kIOMessageSystemHasPoweredOn
-
 IOReturn net_lucid_cake_driver_AJZaurusUSB::message(UInt32 type, IOService *provider, void *argument)
 {
     IOReturn	ior;
@@ -419,17 +394,17 @@ IOReturn net_lucid_cake_driver_AJZaurusUSB::message(UInt32 type, IOService *prov
     
     if (!fpDevice)	// no USB provider
         return kIOReturnUnsupported;
-
+	
     switch (type)
-        {
+	{
 		// general messages
         case kIOMessageServiceIsTerminated:
-            IOLog("AJZaurusUSB::message - kIOMessageServiceIsTerminated ready=%d type=%lu\n", fReady, type);
-            
-            if (fReady)
-                {
-                if (!fTerminate)		// Check if we're already being terminated
-                    { 
+		IOLog("AJZaurusUSB::message - kIOMessageServiceIsTerminated ready=%d type=%lu\n", fReady, type);
+		
+		if (fReady)
+			{
+			if (!fTerminate)		// Check if we're already being terminated
+				{ 
                     IOLog("AJZaurusUSB::message - hardcoded message!\n");
                     // NOTE! This call below depends on the hard coded path of this KEXT. Make sure
                     // that if the KEXT moves, this path is changed!
@@ -442,117 +417,116 @@ IOReturn net_lucid_cake_driver_AJZaurusUSB::message(UInt32 type, IOService *prov
                                                       "Unplug Header",		// the header
                                                       "Unplug Notice",		// the notice - look in Localizable.strings
                                                       "OK"); 
-                    }
-                }
-			else
-                    {
-                    if (fCommInterface)	
-                        {
-                        if (fCommInterface != fDataInterface)
-                            fCommInterface->close(this);
-                        fCommInterface->release();
-                        fCommInterface = NULL;	
-                        }
-                    
-                    if (fDataInterface)	
-                        { 
-                        fDataInterface->close(this);	
-                        fDataInterface->release();
-                        fDataInterface = NULL;	
-                        }
-                    
-                    fpDevice->close(this); 	// need to close so we can get the free and stop calls, only if no sessions active (see putToSleep)
-                    fpDevice = NULL;
-                    }
-                
-                fTerminate = true;		// we're being terminated (unplugged)
-            return kIOReturnSuccess;
-        case kIOMessageServiceIsSuspended:
-            IOLog("AJZaurusUSB::message - kIOMessageServiceIsSuspended\n");
-            break;			
-        case kIOMessageServiceIsResumed: 	
-            IOLog("AJZaurusUSB::message - kIOMessageServiceIsResumed\n");
-            break;			
-        case kIOMessageServiceIsRequestingClose: 
-            IOLog("AJZaurusUSB::message - kIOMessageServiceIsRequestingClose\n"); 
-            break;
-        case kIOMessageServiceIsAttemptingOpen: 	
-            IOLog("AJZaurusUSB::message - kIOMessageServiceAttemptingOpen\n"); 
-            break;
-        case kIOMessageServiceWasClosed: 	
-            IOLog("AJZaurusUSB::message - kIOMessageServiceWasClosed\n"); 
-            break;
-        case kIOMessageServiceBusyStateChange: 	
-            IOLog("AJZaurusUSB::message - kIOMessageServiceBusyStateChange\n"); 
-            break;
-        case kIOMessageServicePropertyChange: 	
-            IOLog("AJZaurusUSB::message - kIOMessageServicePropertyChange\n"); 
-            break;
-
-		// USB messages
+				}
+			}
+		else
+			{
+			if (fCommInterface)	
+				{
+				if (fCommInterface != fDataInterface)
+					fCommInterface->close(this);
+				fCommInterface->release();
+				fCommInterface = NULL;	
+				}
 			
+			if (fDataInterface)	
+				{ 
+					fDataInterface->close(this);	
+					fDataInterface->release();
+					fDataInterface = NULL;	
+				}
+			
+			fpDevice->close(this); 	// need to close so we can get the free and stop calls, only if no sessions active (see putToSleep)
+			fpDevice = NULL;
+			}
+		
+		fTerminate = true;		// we're being terminated (unplugged)
+		return kIOReturnSuccess;
+        case kIOMessageServiceIsSuspended:
+		IOLog("AJZaurusUSB::message - kIOMessageServiceIsSuspended\n");
+		break;			
+        case kIOMessageServiceIsResumed: 	
+		IOLog("AJZaurusUSB::message - kIOMessageServiceIsResumed\n");
+		break;			
+        case kIOMessageServiceIsRequestingClose: 
+		IOLog("AJZaurusUSB::message - kIOMessageServiceIsRequestingClose\n"); 
+		break;
+        case kIOMessageServiceIsAttemptingOpen: 	
+		IOLog("AJZaurusUSB::message - kIOMessageServiceAttemptingOpen\n"); 
+		break;
+        case kIOMessageServiceWasClosed: 	
+		IOLog("AJZaurusUSB::message - kIOMessageServiceWasClosed\n"); 
+		break;
+        case kIOMessageServiceBusyStateChange: 	
+		IOLog("AJZaurusUSB::message - kIOMessageServiceBusyStateChange\n"); 
+		break;
+        case kIOMessageServicePropertyChange: 	
+		IOLog("AJZaurusUSB::message - kIOMessageServicePropertyChange\n"); 
+		break;
+		
+		// USB messages
+		
         case kIOUSBMessagePortHasBeenResumed: 	
-            IOLog("AJZaurusUSB::message - kIOUSBMessagePortHasBeenResumed\n");
-            
-            // If the reads are dead try and resurrect them
-            
-            if (fCommDead && fCommPipe)
-                {
-				ior = fCommPipe->Read(fCommPipeMDP,
-					 5000,	// 5 seconds until timeout
-					 5000,
-					 fCommPipeMDP->getLength(),
-					 &fCommCompletionInfo,
-					 NULL);
-//               ior = fCommPipe->Read(fCommPipeMDP, , NULL);
-                if (ior != kIOReturnSuccess)
-                    {
-                    IOLog("AJZaurusUSB::message - Failed to queue Comm pipe read: %d\n", ior);
-                    }
-                else
-                    {
-                    fCommDead = false;
-                    }
-                }
-			// and again...
-                if (fDataDead)
-                    {
-					ior = fInPipe->Read(fPipeInMDP,
-										  5000,	// 5 seconds until timeout
-										  5000,
-										  fPipeInMDP->getLength(),
-										  &fReadCompletionInfo,
-										  NULL);
-//					ior = fInPipe->Read(fPipeInMDP, &fReadCompletionInfo, NULL);
-                    if (ior != kIOReturnSuccess)
-                        {
-                        IOLog("AJZaurusUSB::message - Failed to queue Data pipe read: %d\n", ior);
-                        }
-                    else 
-                        {
-                        fDataDead = false;
-                        }
-                    }
-                
-				return kIOReturnSuccess;
+		IOLog("AJZaurusUSB::message - kIOUSBMessagePortHasBeenResumed\n");
+		
+		// If the reads are dead try and resurrect them
+		
+		if (fCommDead && fCommPipe)
+			{
+			ior = fCommPipe->Read(fCommPipeMDP,
+								  5000,	// 5 seconds until timeout
+								  5000,
+								  fCommPipeMDP->getLength(),
+								  &fCommCompletionInfo,
+								  NULL);
+			//               ior = fCommPipe->Read(fCommPipeMDP, , NULL);
+			if (ior != kIOReturnSuccess)
+				{
+				IOLog("AJZaurusUSB::message - Failed to queue Comm pipe read: %d\n", ior);
+				}
+			else
+				{
+				fCommDead = false;
+				}
+			}
+		// and again...
+		if (fDataDead)
+			{
+			ior = fInPipe->Read(fPipeInMDP,
+								5000,	// 5 seconds until timeout
+								5000,
+								fPipeInMDP->getLength(),
+								&fReadCompletionInfo,
+								NULL);
+			if (ior != kIOReturnSuccess)
+				{
+				IOLog("AJZaurusUSB::message - Failed to queue Data pipe read: %d\n", ior);
+				}
+			else 
+				{
+				fDataDead = false;
+				}
+			}
+		
+		return kIOReturnSuccess;
         case kIOUSBMessageHubResumePort:
-            IOLog("AJZaurusUSB::message - kIOUSBMessageHubResumePort\n");
-            break;
-			// power
+		IOLog("AJZaurusUSB::message - kIOUSBMessageHubResumePort\n");
+		break;
+		// power
         case kIOMessageDeviceHasPoweredOn:
-            IOLog("AJZaurusUSB::message - kIOMessageDeviceHasPoweredOn\n");
-            break;
+		IOLog("AJZaurusUSB::message - kIOMessageDeviceHasPoweredOn\n");
+		break;
         case kIOMessageSystemWillSleep:
-            IOLog("AJZaurusUSB::message - kIOMessageSystemWillSleep\n");
-            break;
+		IOLog("AJZaurusUSB::message - kIOMessageSystemWillSleep\n");
+		break;
         case kIOMessageSystemHasPoweredOn:
-            IOLog("AJZaurusUSB::message - kIOMessageSystemHasPoweredOn\n");
-            break;
-			// any other
+		IOLog("AJZaurusUSB::message - kIOMessageSystemHasPoweredOn\n");
+		break;
+		// any other
         default:
-            IOLog("AJZaurusUSB::message - unknown message\n");
-            break;
-        }
+		IOLog("AJZaurusUSB::message - unknown message\n");
+		break;
+	}
 	IOSleep(20);    
     return kIOReturnUnsupported;
 }/* end message */
@@ -561,7 +535,7 @@ IOReturn net_lucid_cake_driver_AJZaurusUSB::message(UInt32 type, IOService *prov
 //
 //		Method:		net_lucid_cake_driver_AJZaurusUSB::outputPacket
 //
-//		Inputs:		mbuf - the packet
+//		Inputs:		mbuf - the packet (may be NULL after awaking from sleep)
 //					param - optional parameter
 //
 //		Outputs:	Return code - kIOReturnOutputSuccess or kIOReturnOutputStall
@@ -578,7 +552,11 @@ UInt32 net_lucid_cake_driver_AJZaurusUSB::outputPacket(mbuf_t pkt, void *param)
     IOLog("AJZaurusUSB::outputPacket(%p)\n", pkt);
 	IOSleep(20);
 #endif
-    if(!fLinkStatus)
+	if(!pkt)
+        {
+        IOLog("AJZaurusUSB::outputPacket(NULL)\n");
+		}
+	else if(!fLinkStatus)
         {
         IOLog("AJZaurusUSB::outputPacket(%p) - link is down (%d)\n", pkt, fLinkStatus);
         if(fOutputErrsOK)
@@ -587,12 +565,12 @@ UInt32 net_lucid_cake_driver_AJZaurusUSB::outputPacket(mbuf_t pkt, void *param)
         } 
     else if(!USBTransmitPacket(pkt))
         { // wasn't able to transmit
-        ret = kIOReturnOutputStall;
-        // ret = kIOReturnOutputDropped;
-        IOLog("AJZaurusUSB::outputPacket(%p) - packet dropped\n", pkt);
-        // If the driver returns kIOReturnDropped, it should also put the mbuf_t back into the network stack
-        // Õs common pool by invoking the superclassÕs freePacket function.   
-        freePacket(pkt);
+			ret = kIOReturnOutputStall;
+			// ret = kIOReturnOutputDropped;
+			IOLog("AJZaurusUSB::outputPacket(%p) - packet dropped\n", pkt);
+			// If the driver returns kIOReturnDropped, it should also put the mbuf_t back into the network stack
+			// Õs common pool by invoking the superclassÕs freePacket function.   
+			freePacket(pkt);
         }
     return ret;
 }/* end outputPacket */
@@ -616,7 +594,7 @@ void net_lucid_cake_driver_AJZaurusUSB::timeoutOccurred(IOTimerEventSource *time
     IOUSBDevRequest	*STREQ;
     bool		statOk = false;
     
-//    IOLog("AJZaurusUSB::timeoutOccurred\n");
+	//    IOLog("AJZaurusUSB::timeoutOccurred\n");
     
     if (fReady)
         fTransmitQueue->service(IOBasicOutputQueue::kServiceAsync); // AJ: revive a stalled queue (according to Apple's documentation, this call doesn't do any harm, even if the queue wasn't stalled).
@@ -625,9 +603,9 @@ void net_lucid_cake_driver_AJZaurusUSB::timeoutOccurred(IOTimerEventSource *time
     
     if ((fEthernetStatistics[0]|fEthernetStatistics[1]|fEthernetStatistics[2]|fEthernetStatistics[3]) == 0)
         { // no bit is set
- //       IOLog("AJZaurusUSB::timeoutOccurred - No Ethernet statistics defined\n");
-        fTimerSource->setTimeoutMS(WATCHDOG_TIMER_MS);	// AJ: set up the watchdog again
-        return;
+			//       IOLog("AJZaurusUSB::timeoutOccurred - No Ethernet statistics defined\n");
+			fTimerSource->setTimeoutMS(WATCHDOG_TIMER_MS);	// AJ: set up the watchdog again
+			return;
         }
     
     
@@ -643,59 +621,59 @@ void net_lucid_cake_driver_AJZaurusUSB::timeoutOccurred(IOTimerEventSource *time
             fCurrStat = 0;
         switch(currStat)
             {
-            case kXMIT_OK_REQ:
+				case kXMIT_OK_REQ:
                 if (fEthernetStatistics[0] & kXMIT_OK)
                     statOk = true;
                 break;
-            case kRCV_OK_REQ:
+				case kRCV_OK_REQ:
                 if (fEthernetStatistics[0] & kRCV_OK)
                     statOk = true;
                 break;
-            case kXMIT_ERROR_REQ:
+				case kXMIT_ERROR_REQ:
                 if (fEthernetStatistics[0] & kXMIT_ERROR_REQ)
                     statOk = true;
                 break;
-            case kRCV_ERROR_REQ:
+				case kRCV_ERROR_REQ:
                 if (fEthernetStatistics[0] & kRCV_ERROR_REQ)
                     statOk = true;
                 break;
-            case kRCV_CRC_ERROR_REQ:
+				case kRCV_CRC_ERROR_REQ:
                 if (fEthernetStatistics[2] & kRCV_CRC_ERROR)
                     statOk = true;
                 break;
-            case kRCV_ERROR_ALIGNMENT_REQ:
+				case kRCV_ERROR_ALIGNMENT_REQ:
                 if (fEthernetStatistics[2] & kRCV_ERROR_ALIGNMENT)
                     statOk = true;
                 break;
-            case kXMIT_ONE_COLLISION_REQ:
+				case kXMIT_ONE_COLLISION_REQ:
                 if (fEthernetStatistics[2] & kXMIT_ONE_COLLISION)
                     statOk = true;
                 break;
-            case kXMIT_MORE_COLLISIONS_REQ:
+				case kXMIT_MORE_COLLISIONS_REQ:
                 if (fEthernetStatistics[2] & kXMIT_MORE_COLLISIONS)
                     statOk = true;
                 break;
-            case kXMIT_DEFERRED_REQ:
+				case kXMIT_DEFERRED_REQ:
                 if (fEthernetStatistics[2] & kXMIT_DEFERRED)
                     statOk = true;
                 break;
-            case kXMIT_MAX_COLLISION_REQ:
+				case kXMIT_MAX_COLLISION_REQ:
                 if (fEthernetStatistics[2] & kXMIT_MAX_COLLISION)
                     statOk = true;
                 break;
-            case kRCV_OVERRUN_REQ:
+				case kRCV_OVERRUN_REQ:
                 if (fEthernetStatistics[3] & kRCV_OVERRUN)
                     statOk = true;
                 break;
-            case kXMIT_TIMES_CARRIER_LOST_REQ:
+				case kXMIT_TIMES_CARRIER_LOST_REQ:
                 if (fEthernetStatistics[3] & kXMIT_TIMES_CARRIER_LOST)
                     statOk = true;
                 break;
-            case kXMIT_LATE_COLLISIONS_REQ:
+				case kXMIT_LATE_COLLISIONS_REQ:
                 if (fEthernetStatistics[3] & kXMIT_LATE_COLLISIONS)
                     statOk = true;
                 break;
-            default:
+				default:
                 break;
             }
         }
@@ -731,7 +709,7 @@ void net_lucid_cake_driver_AJZaurusUSB::timeoutOccurred(IOTimerEventSource *time
             }
         }
     
-//    IOLog("AJZaurusUSB::timeoutOccurred - Ethernet statistics done\n");
+	//    IOLog("AJZaurusUSB::timeoutOccurred - Ethernet statistics done\n");
     
     // Restart the watchdog timer
     
@@ -758,14 +736,14 @@ bool net_lucid_cake_driver_AJZaurusUSB::wakeUp()
     
     IOLog("AJZaurusUSB::wakeUp\n");
  	IOSleep(20);
-   
+	
     fReady = false;
     
     if (fTimerSource)
         fTimerSource->cancelTimeout();	// cancel any running timer
     
     setLinkStatus(0, 0);				// Initialize the link state
-        
+	
     if (!allocateResources()) 
         {
         return false;
@@ -777,10 +755,10 @@ bool net_lucid_cake_driver_AJZaurusUSB::wakeUp()
     fCommCompletionInfo.action = commReadComplete;
     fCommCompletionInfo.parameter = NULL;
     
-//    if(fCommPipe)
-  //      {
-        //rtn = fCommPipe->Read(fCommPipeMDP, &fCommCompletionInfo, NULL);
-        rtn = kIOReturnSuccess;
+	//    if(fCommPipe)
+	//      {
+	//rtn = fCommPipe->Read(fCommPipeMDP, &fCommCompletionInfo, NULL);
+	rtn = kIOReturnSuccess;
     //    }
     if(rtn == kIOReturnSuccess)
         {
@@ -789,23 +767,19 @@ bool net_lucid_cake_driver_AJZaurusUSB::wakeUp()
         fReadCompletionInfo.target = this;
         fReadCompletionInfo.action = dataReadComplete;
         fReadCompletionInfo.parameter = NULL;
-  
+		
 		rtn = fInPipe->Read(fPipeInMDP,
 							5000,	// 5 seconds until timeout
 							5000,
 							fPipeInMDP->getLength(),
 							&fReadCompletionInfo,
 							NULL);
-      
+		
         if (rtn == kIOReturnSuccess)
             {
             // Set up the data-out bulk pipe:
             
-            //fWriteCompletionInfo.target	= this;
-            //fWriteCompletionInfo.action	= dataWriteComplete;
-            //fWriteCompletionInfo.parameter = NULL;				// for now, filled in with the mbuf address when sent
-            
-            for (int i=0; i<kOutBufPool; i++)
+			for (int i=0; i<kOutBufPool; i++)
                 {
                 fPipeOutBuff[i].writeCompletionInfo.target = this;
                 fPipeOutBuff[i].writeCompletionInfo.action = dataWriteComplete;
@@ -843,7 +817,7 @@ bool net_lucid_cake_driver_AJZaurusUSB::wakeUp()
 			releaseResources();
 			return false;
 			}
-
+		
         fTimerSource->setTimeoutMS(WATCHDOG_TIMER_MS);
         fReady = true;
         }
@@ -874,7 +848,7 @@ void net_lucid_cake_driver_AJZaurusUSB::putToSleep()
     
     if (fTimerSource)
         fTimerSource->cancelTimeout();
-
+	
     setLinkStatus(0, 0);
     
     // Release all resources
@@ -979,14 +953,14 @@ void net_lucid_cake_driver_AJZaurusUSB::stop(IOService *provider)
 {
     IOLog("AJZaurusUSB::stop\n");
  	IOSleep(20);
-   
+	
     if (fNetworkInterface)
         {
         detachInterface(fNetworkInterface);
         fNetworkInterface->release();
         fNetworkInterface = NULL;
         }
-        
+	
     if (fCommInterface)	
         {
 		if (fCommInterface != fDataInterface)
@@ -997,9 +971,9 @@ void net_lucid_cake_driver_AJZaurusUSB::stop(IOService *provider)
     
     if (fDataInterface)	
         { 
-        fDataInterface->close(this);	
-        fDataInterface->release();
-        fDataInterface = NULL;	
+			fDataInterface->close(this);	
+			fDataInterface->release();
+			fDataInterface = NULL;	
         }
     
     if (fpDevice)
@@ -1019,7 +993,7 @@ void net_lucid_cake_driver_AJZaurusUSB::stop(IOService *provider)
         fTransmitQueue->release();
         fTransmitQueue = NULL;
         }
-    
+	
     super::stop(provider);
     
     return;
@@ -1060,16 +1034,100 @@ void net_lucid_cake_driver_AJZaurusUSB::free()
 {
     
     IOLog("AJZaurusUSB::free\n");
-    
-#if USE_ELG
-    if (g.evLogBuf)
-        IOFree(g.evLogBuf, kEvLogSize);
-#endif /* USE_ELG */
-    
+	
     super::free();
     IOSimpleLockFree(fLock);
     return;
     
 }/* end free */
+
+/****************************************************************************************************/
+//
+//		Method:		net_lucid_cake_driver_AJZaurusUSB::registerWithPolicyMaker
+//
+//		Inputs:		provider - my provider
+//
+//		Outputs:	return code - true(initialized), false(failed)
+//
+//		Desc:		Add ourselves to the power management tree so we can do
+//					the right thing on sleep/wakeup. 
+//
+//		see:		http://developer.apple.com/mac/library/documentation/DeviceDrivers/Conceptual/IOKitFundamentals/PowerMgmt/PowerMgmt.html#//apple_ref/doc/uid/TP0000020-BABCCBIJ
+//					and section "Network / Power Management" of http://developer.apple.com/mac/library/documentation/DeviceDrivers/Conceptual/IOKitFundamentals/Families_Ref/Families_Ref.html#//apple_ref/doc/uid/TP0000021-BABFBCFG
+//
+/****************************************************************************************************/
+
+IOReturn net_lucid_cake_driver_AJZaurusUSB::registerWithPolicyMaker( IOService * policyMaker )
+{
+    IOReturn ioreturn;
+	
+	static IOPMPowerState gOurPowerStates[kNumCDCStates] =
+	{
+    {kIOPMPowerStateVersion1,0,0,0,0,0,0,0,0,0,0,0},
+    {kIOPMPowerStateVersion1,kIOPMDeviceUsable,kIOPMPowerOn,kIOPMPowerOn,0,0,0,0,0,0,0,0}
+	};
+	
+	IOLog("AJZaurusUSB::registerWithPolicyMaker\n");
+	
+    fPowerState = kCDCPowerOnState;				// init our power state to be 'on'
+	ioreturn = policyMaker->registerPowerDriver( this, gOurPowerStates, kNumCDCStates);
+    return ioreturn;
+    
+}/* end initForPM */
+
+/****************************************************************************************************/
+//
+//		Method:		net_lucid_cake_driver_AJZaurusUSB::initialPowerStateForDomainState
+//
+//		Inputs:		flags - 
+//
+//		Outputs:	return code - Current power state
+//
+//		Desc:		Request for our initial power state. 
+//
+/****************************************************************************************************/
+
+unsigned long net_lucid_cake_driver_AJZaurusUSB::initialPowerStateForDomainState(IOPMPowerFlags flags)
+{
+	
+    return fPowerState;
+    
+}/* end initialPowerStateForDomainState */
+
+/****************************************************************************************************/
+//
+//		Method:		net_lucid_cake_driver_AJZaurusUSB::setPowerState
+//
+//		Inputs:		whatState - new state
+//
+//		Outputs:	Return code - IOPMAckImplied
+//
+//		Desc:		We are notified to turn power on/off
+//
+/****************************************************************************************************/
+
+IOReturn net_lucid_cake_driver_AJZaurusUSB::setPowerState(unsigned long whatState, IOService *whatDevice)
+{ // turn your device on/off here
+    IOLog("AJZaurusUSB::setPowerState - power %lu\n", whatState);
+	
+    if(!(whatState == kCDCPowerOffState || whatState == kCDCPowerOnState))
+		return IOPMNoSuchState;
+	
+	if(whatState == fPowerState)
+		return IOPMAckImplied;	// unchanged
+	fPowerState=whatState;
+	if(fPowerState == kCDCPowerOnState)
+		{
+		IOLog("AJZaurusUSB::setPowerState - power on\n");
+		// do whatever we need to do
+		
+		resetDevice();
+		}
+	else
+		{
+		IOLog("AJZaurusUSB::setPowerState - power off\n");		
+		}
+	return IOPMNoErr;
+}
 
 /* EOF */

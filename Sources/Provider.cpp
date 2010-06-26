@@ -23,7 +23,7 @@
  with same name as enclosing class" will be issued. This warning can be ignored.
  
  Copyright:		Copyright 2002, 2003 Andreas Junghans
- Copyright 2004-2006 H. Nikolaus Schaller
+ Copyright 2004-2010 H. Nikolaus Schaller
  
  Disclaimer:		This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@
  Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  
  Change History (most recent first):
-  
+ 
  <x>     2004-2005   Support for Zaurus C1000, C3000
  made compile on MacOS X 10.4 with Xcode 2.0
  power management added
@@ -98,7 +98,6 @@ bool net_lucid_cake_driver_AJZaurusUSB::configureDevice(UInt8 numConfigs)
     UInt16					numends = 0;
     UInt16					alt;
 	const IOUSBConfigurationDescriptor	*cd = NULL;		// configuration descriptor
-//	IOUSBInterfaceDescriptor 		*intf = NULL;		// interface descriptor
 	UInt8				cval;
 	UInt8				config = 0;
 	UInt8				idx;
@@ -121,7 +120,7 @@ bool net_lucid_cake_driver_AJZaurusUSB::configureDevice(UInt8 numConfigs)
 	 2			2				Interrupt interface of RNDIS for Familiar - skip
 	 255		0				found - has only Data pipe (CDC Ethernet Subclass)
 	 */
-	 
+	
 	for(cval=0; cval<numConfigs; cval++)
 		{
 		IOUSBInterface	*interface;
@@ -157,51 +156,51 @@ bool net_lucid_cake_driver_AJZaurusUSB::configureDevice(UInt8 numConfigs)
 		while(interface=fpDevice->FindNextInterface(interface, &req))
 			{ // got next interface
 #if 1
-			IOLog("AJZaurusUSB::configureDevice -   InterfaceClass=%d\n", interface->GetInterfaceClass());
-			IOLog("AJZaurusUSB::configureDevice -   InterfaceSubClass=%d\n", interface->GetInterfaceSubClass());
-			IOLog("AJZaurusUSB::configureDevice -   InterfaceProtocol=%d\n", interface->GetInterfaceProtocol());
-			IOSleep(20);
-#endif
-			if(!interface)
-				{
-				IOLog("AJZaurusUSB::configureDevice -   no interface for interface descriptor\n");
-				continue;
-				}
-			if(interface->GetInterfaceClass() == 2 && interface->GetInterfaceSubClass() == kMDLM)
-				{ // found a Zaurus compatible configuration
-#if 1
-				IOLog("AJZaurusUSB::configureDevice -   MDLM interface found\n");
-#endif
-				fPadded = true;
-				fChecksum = true;
-				break;
-				}
-			if(interface->GetInterfaceClass() == 2 && interface->GetInterfaceSubClass() == kEthernetControlModel)
-				{ // found a Familiar Handheld Linux compatible configuration
-#if 1
-				IOLog("AJZaurusUSB::configureDevice -   ECM interface found\n");
+				IOLog("AJZaurusUSB::configureDevice -   InterfaceClass=%d\n", interface->GetInterfaceClass());
+				IOLog("AJZaurusUSB::configureDevice -   InterfaceSubClass=%d\n", interface->GetInterfaceSubClass());
+				IOLog("AJZaurusUSB::configureDevice -   InterfaceProtocol=%d\n", interface->GetInterfaceProtocol());
 				IOSleep(20);
 #endif
-				fPadded = false;
-				fChecksum = false;
-				break;
-				}
-			if(interface->GetInterfaceClass() == 255 && interface->GetInterfaceSubClass() == 0)
-				{ // found a special configuration
+				if(!interface)
+					{
+					IOLog("AJZaurusUSB::configureDevice -   no interface for interface descriptor\n");
+					continue;
+					}
+				if(interface->GetInterfaceClass() == 2 && interface->GetInterfaceSubClass() == kMDLM)
+					{ // found a Zaurus compatible configuration
 #if 1
-				IOLog("AJZaurusUSB::configureDevice -   CDC Ethernet Subset found\n");
-				IOSleep(20);
+						IOLog("AJZaurusUSB::configureDevice -   MDLM interface found\n");
 #endif
-				fPadded = false;
-				fChecksum = false;
-				break;
-				}
+						fPadded = true;
+						fChecksum = true;
+						break;
+					}
+				if(interface->GetInterfaceClass() == 2 && interface->GetInterfaceSubClass() == kEthernetControlModel)
+					{ // found a Familiar Handheld Linux compatible configuration
+#if 1
+						IOLog("AJZaurusUSB::configureDevice -   ECM interface found\n");
+						IOSleep(20);
+#endif
+						fPadded = false;
+						fChecksum = false;
+						break;
+					}
+				if(interface->GetInterfaceClass() == 255 && interface->GetInterfaceSubClass() == 0)
+					{ // found a special configuration
+#if 1
+						IOLog("AJZaurusUSB::configureDevice -   CDC Ethernet Subset found\n");
+						IOSleep(20);
+#endif
+						fPadded = false;
+						fChecksum = false;
+						break;
+					}
 			}
 		if(!interface)
 			{ // we have checked all interfaces - try next configuration
-			IOLog("AJZaurusUSB::configureDevice -   no matching interface for configuration %d\n", cval);
-			IOSleep(20);
-			continue;
+				IOLog("AJZaurusUSB::configureDevice -   no matching interface for configuration %d\n", cval);
+				IOSleep(20);
+				continue;
 			}
 		fCommInterface=interface;	// we have found the Comm interface
 		fCommInterfaceNumber = interface->GetInterfaceNumber();
@@ -209,7 +208,7 @@ bool net_lucid_cake_driver_AJZaurusUSB::configureDevice(UInt8 numConfigs)
 		fInterfaceSubClass = interface->GetInterfaceSubClass();
 		break;
 		}
-
+	
 	if(cval == numConfigs)
 		{
 		IOLog("AJZaurusUSB::configureDevice -  no matching Interface descriptor found\n");
@@ -220,7 +219,7 @@ bool net_lucid_cake_driver_AJZaurusUSB::configureDevice(UInt8 numConfigs)
 	
 	fVendorID = fpDevice->GetVendorID();
 	fProductID = fpDevice->GetProductID();
-
+	
 #if 1
 	IOLog("AJZaurusUSB::configureDevice - comm Interface=%p\n", fCommInterface);
 	IOLog("AJZaurusUSB::configureDevice - vendor  id=%d (0x%04x)\n", fVendorID, fVendorID);
@@ -245,7 +244,7 @@ bool net_lucid_cake_driver_AJZaurusUSB::configureDevice(UInt8 numConfigs)
 	IOLog("AJZaurusUSB::configureDevice - serial number=%s idx=%u\n", serialString, idx);
 	IOSleep(20);
 #endif
-
+	
     if(!getFunctionalDescriptors())
         {
         IOLog("AJZaurusUSB::configureDevice - getFunctionalDescriptors failed\n");
@@ -254,56 +253,56 @@ bool net_lucid_cake_driver_AJZaurusUSB::configureDevice(UInt8 numConfigs)
     
     if(fInterfaceSubClass != kEthernetControlModel)
         { // Zaurus (MDLM) uses a single interface for comm&data but separates endpoints
-        fDataInterface = fCommInterface;	// use the same
+			fDataInterface = fCommInterface;	// use the same
 		}
     else
         { // open the separate comm interface here if we have a ECM device
 #if 1
-		IOLog("AJZaurusUSB::configureDevice - comm interface %p\n", fCommInterface);
-		IOLog("AJZaurusUSB::configureDevice -   ConfigValue %d\n", fCommInterface->GetConfigValue());
-		IOLog("AJZaurusUSB::configureDevice -   AlternateSetting %d\n", fCommInterface->GetAlternateSetting());
-		IOLog("AJZaurusUSB::configureDevice -   InterfaceClass %d\n", fCommInterface->GetInterfaceClass());
-		IOLog("AJZaurusUSB::configureDevice -   InterfaceSubClass %d\n", fCommInterface->GetInterfaceSubClass());
-		IOLog("AJZaurusUSB::configureDevice -   InterfaceProtocol %d\n", fCommInterface->GetInterfaceProtocol());
-		IOSleep(20);
-		IOLog("AJZaurusUSB::configureDevice -   InterfaceNumber %d\n", fCommInterface->GetInterfaceNumber());
-		IOLog("AJZaurusUSB::configureDevice -   NumEndpoints %d\n", fCommInterface->GetNumEndpoints());
-		IOLog("AJZaurusUSB::configureDevice -   BusyState %lu\n", fCommInterface->getBusyState());
-		IOLog("AJZaurusUSB::configureDevice -   Inactive %d\n", fCommInterface->isInactive());
-		IOLog("AJZaurusUSB::configureDevice -   Open(any) %d\n", fCommInterface->isOpen());
-		IOLog("AJZaurusUSB::configureDevice -   Open(this) %d\n", fCommInterface->isOpen(this));
-		IOSleep(20);
+			IOLog("AJZaurusUSB::configureDevice - comm interface %p\n", fCommInterface);
+			IOLog("AJZaurusUSB::configureDevice -   ConfigValue %d\n", fCommInterface->GetConfigValue());
+			IOLog("AJZaurusUSB::configureDevice -   AlternateSetting %d\n", fCommInterface->GetAlternateSetting());
+			IOLog("AJZaurusUSB::configureDevice -   InterfaceClass %d\n", fCommInterface->GetInterfaceClass());
+			IOLog("AJZaurusUSB::configureDevice -   InterfaceSubClass %d\n", fCommInterface->GetInterfaceSubClass());
+			IOLog("AJZaurusUSB::configureDevice -   InterfaceProtocol %d\n", fCommInterface->GetInterfaceProtocol());
+			IOSleep(20);
+			IOLog("AJZaurusUSB::configureDevice -   InterfaceNumber %d\n", fCommInterface->GetInterfaceNumber());
+			IOLog("AJZaurusUSB::configureDevice -   NumEndpoints %d\n", fCommInterface->GetNumEndpoints());
+			IOLog("AJZaurusUSB::configureDevice -   BusyState %lu\n", fCommInterface->getBusyState());
+			IOLog("AJZaurusUSB::configureDevice -   Inactive %d\n", fCommInterface->isInactive());
+			IOLog("AJZaurusUSB::configureDevice -   Open(any) %d\n", fCommInterface->isOpen());
+			IOLog("AJZaurusUSB::configureDevice -   Open(this) %d\n", fCommInterface->isOpen(this));
+			IOSleep(20);
 #endif
-        if(!fCommInterface->open(this, kIOServiceSeize))
-            {
-            IOLog("AJZaurusUSB::configureDevice - open comm interface failed %p\n", fCommInterface);
-			//
-			// This is a Horrible Hack if some other driver has already opened our channel!!!
-			//
-			while(fCommInterface->isOpen())
-				{
-				IOLog("AJZaurusUSB::configureDevice - forced close of interfering comm interface for client %p\n", fCommInterface->getClient());
-				fCommInterface->close(fCommInterface->getClient());
-				}
 			if(!fCommInterface->open(this, kIOServiceSeize))
 				{
-				IOLog("AJZaurusUSB::configureDevice - open comm interface failed again %p\n", fCommInterface);
+				IOLog("AJZaurusUSB::configureDevice - open comm interface failed %p\n", fCommInterface);
+				//
+				// This is a Horrible Hack if some other driver has already opened our channel!!!
+				//
+				while(fCommInterface->isOpen())
+					{
+					IOLog("AJZaurusUSB::configureDevice - forced close of interfering comm interface for client %p\n", fCommInterface->getClient());
+					fCommInterface->close(fCommInterface->getClient());
+					}
+				if(!fCommInterface->open(this, kIOServiceSeize))
+					{
+					IOLog("AJZaurusUSB::configureDevice - open comm interface failed again %p\n", fCommInterface);
+					fCommInterface = NULL;
+					return false;
+					}
+				}
+			req.bInterfaceClass = 10;
+			req.bInterfaceSubClass = 0;
+			req.bInterfaceProtocol = kIOUSBFindInterfaceDontCare;
+			req.bAlternateSetting = kIOUSBFindInterfaceDontCare;
+			fDataInterface = fpDevice->FindNextInterface(NULL, &req);		// find matching data interface with 2 endpoints
+			if(!fDataInterface)
+				{
+				IOLog("AJZaurusUSB::configureDevice - Find(Next)Interface for Communications-Data failed\n");
+				fCommInterface->close(this);	// close
 				fCommInterface = NULL;
 				return false;
 				}
-            }
- 		req.bInterfaceClass = 10;
-        req.bInterfaceSubClass = 0;
-        req.bInterfaceProtocol = kIOUSBFindInterfaceDontCare;
-        req.bAlternateSetting = kIOUSBFindInterfaceDontCare;
-        fDataInterface = fpDevice->FindNextInterface(NULL, &req);		// find matching data interface with 2 endpoints
-		if(!fDataInterface)
-			{
-			IOLog("AJZaurusUSB::configureDevice - Find(Next)Interface for Communications-Data failed\n");
-            fCommInterface->close(this);	// close
-			fCommInterface = NULL;
-			return false;
-			}
 		}
 	
 	numends = fDataInterface->GetNumEndpoints();
@@ -369,7 +368,7 @@ bool net_lucid_cake_driver_AJZaurusUSB::configureDevice(UInt8 numConfigs)
 		fDataInterface = NULL;
         return false;
         } 
-        
+	
 	fCommInterface->retain();
 	fDataInterface->retain();
 	
@@ -387,7 +386,7 @@ bool net_lucid_cake_driver_AJZaurusUSB::configureDevice(UInt8 numConfigs)
 		fDataInterface = NULL;
 		return false;
 		}
-        
+	
     return true;
     
 }/* end configureDevice */
@@ -498,9 +497,9 @@ void net_lucid_cake_driver_AJZaurusUSB::dumpDevice(UInt8 numConfigs)
                 IOLog("AJZaurusUSB::dumpDevice -     bNumEndpoints=%d\n", intf->bNumEndpoints);
                 IOLog("AJZaurusUSB::dumpDevice -     iInterface=%d\n", intf->iInterface);
 				IOSleep(20);
-               }
-        }
-    }
+				}
+			}
+		}
 }
 
 
@@ -522,110 +521,111 @@ bool net_lucid_cake_driver_AJZaurusUSB::getFunctionalDescriptors()
     HeaderFunctionalDescriptor *funcDesc = NULL;
     EnetFunctionalDescriptor *ENETFDesc = NULL;
     
+	IOSleep(1);
     IOLog("AJZaurusUSB::getFunctionalDescriptors\n");
-	IOSleep(20);
+	IOSleep(1);
     
     while((funcDesc = (HeaderFunctionalDescriptor*) fCommInterface->FindNextAssociatedDescriptor((void *)funcDesc, CS_INTERFACE)))
         { // loop through all functional descriptors
-        switch (funcDesc->bDescriptorSubtype)
+			switch (funcDesc->bDescriptorSubtype)
             {
-            case Header_FunctionalDescriptor:
+				case Header_FunctionalDescriptor:
                 IOLog("AJZaurusUSB::getFunctionalDescriptors - Header Functional Descriptor - type=%d subtype=%d\n", funcDesc->bDescriptorType, funcDesc->bDescriptorSubtype);
                 break;
-            case Enet_Functional_Descriptor:
+				case Enet_Functional_Descriptor:
                 ENETFDesc = (EnetFunctionalDescriptor *) funcDesc;
                 IOLog("AJZaurusUSB::getFunctionalDescriptors - Ethernet Functional Descriptor - type=%d subtype=%d\n", funcDesc->bDescriptorType, funcDesc->bDescriptorSubtype);
                 break;
-            case Union_FunctionalDescriptor:
+				case Union_FunctionalDescriptor:
                 IOLog("AJZaurusUSB::getFunctionalDescriptors - Union Functional Descriptor - type=%d subtype=%d\n", funcDesc->bDescriptorType, funcDesc->bDescriptorSubtype);
                 break;
-            default:
+				default:
                 IOLog("AJZaurusUSB::getFunctionalDescriptors - unknown Functional Descriptor - type=%d subtype=%d\n", funcDesc->bDescriptorType, funcDesc->bDescriptorSubtype);
                 break;
             }
-		IOSleep(20);
+			IOSleep(20);
         }
     
     if(ENETFDesc)
         { // The Enet Func. Desc.  must be present
-        
-        // Determine who is collecting the input/output network stats.
-        
-        fOutputPktsOK = !(ENETFDesc->bmEthernetStatistics[0] & kXMIT_OK);
-        fInputPktsOK = !(ENETFDesc->bmEthernetStatistics[0] & kRCV_OK);
-        fOutputErrsOK = !(ENETFDesc->bmEthernetStatistics[0] & kXMIT_ERROR);
-        fInputErrsOK = !(ENETFDesc->bmEthernetStatistics[0] & kRCV_ERROR);
-        
-        // Save the stats (it's bit mapped)
-        
-        fEthernetStatistics[0] = ENETFDesc->bmEthernetStatistics[0];
-        fEthernetStatistics[1] = ENETFDesc->bmEthernetStatistics[1];
-        fEthernetStatistics[2] = ENETFDesc->bmEthernetStatistics[2];
-        fEthernetStatistics[3] = ENETFDesc->bmEthernetStatistics[3];
-        
-        // Save the multicast filters (remember it's intel format)
-        
-        fMcFilters = USBToHostWord(*(UInt16 *)ENETFDesc->wNumberMCFilters);
-        
-        // Get the Ethernet address
-        
-        if (ENETFDesc->iMACAddress != 0)
-            {	
-			// check Info.plist if we should override			
-			char etherbuf[6*3];	// ASCII string for Ethernet Address
-			ior = fpDevice->GetStringDescriptor(ENETFDesc->iMACAddress, etherbuf, sizeof(etherbuf));
-            if (ior == kIOReturnSuccess)
-                { // convert string
-				int i;
-				IOLog("AJZaurusUSB::getFunctionalDescriptors - Ethernet string=%s\n", etherbuf);
-				IOSleep(20);
-				for(i=0; i<6; i++)
-					{ // convert ASCII to bitmask
-					int c=etherbuf[2*i];
-					int byte;
-					if(c >= '9') c-=('A'-10);
-					byte=(c&0xf)<<4;
-					c=etherbuf[2*i+1];
-					if(c >= '9') c-=('A'-10);
-					byte+=(c&0xf);
-					fEaddr[i]=byte;
-					}
+			
+			// Determine who is collecting the input/output network stats.
+			
+			fOutputPktsOK = !(ENETFDesc->bmEthernetStatistics[0] & kXMIT_OK);
+			fInputPktsOK = !(ENETFDesc->bmEthernetStatistics[0] & kRCV_OK);
+			fOutputErrsOK = !(ENETFDesc->bmEthernetStatistics[0] & kXMIT_ERROR);
+			fInputErrsOK = !(ENETFDesc->bmEthernetStatistics[0] & kRCV_ERROR);
+			
+			// Save the stats (it's bit mapped)
+			
+			fEthernetStatistics[0] = ENETFDesc->bmEthernetStatistics[0];
+			fEthernetStatistics[1] = ENETFDesc->bmEthernetStatistics[1];
+			fEthernetStatistics[2] = ENETFDesc->bmEthernetStatistics[2];
+			fEthernetStatistics[3] = ENETFDesc->bmEthernetStatistics[3];
+			
+			// Save the multicast filters (remember it's intel format)
+			
+			fMcFilters = USBToHostWord(*(UInt16 *)ENETFDesc->wNumberMCFilters);
+			
+			// Get the Ethernet address
+			
+			if (ENETFDesc->iMACAddress != 0)
+				{	
+					// check Info.plist if we should override			
+					char etherbuf[6*3];	// ASCII string for Ethernet Address
+					ior = fpDevice->GetStringDescriptor(ENETFDesc->iMACAddress, etherbuf, sizeof(etherbuf));
+					if (ior == kIOReturnSuccess)
+						{ // convert string
+							int i;
+							IOLog("AJZaurusUSB::getFunctionalDescriptors - Ethernet string=%s\n", etherbuf);
+							IOSleep(20);
+							for(i=0; i<6; i++)
+								{ // convert ASCII to bitmask
+									int c=etherbuf[2*i];
+									int byte;
+									if(c >= '9') c-=('A'-10);
+									byte=(c&0xf)<<4;
+									c=etherbuf[2*i+1];
+									if(c >= '9') c-=('A'-10);
+									byte+=(c&0xf);
+									fEaddr[i]=byte;
+								}
 #if 1	// OVERRIDE
-				{ // compute a MAC address that distinguishes different devices as good as possible but is constant for each one
-					UInt32 fcs=CRC32_INITFCS;
-					fcs=fcs_compute32((unsigned char *)vendorString, strlen(vendorString), fcs);
-					fcs=fcs_compute32((unsigned char *)modelString, strlen(modelString), fcs);
-					fcs=fcs_compute32((unsigned char *)serialString, strlen(serialString), fcs);
-					fEaddr[0]=0x40;
-					fEaddr[1]=0x00;
-					fEaddr[2]=fcs>>24;
-					fEaddr[3]=fcs>>16;
-					fEaddr[4]=fcs>>8;
-					fEaddr[5]=fcs>>0;
-				}
+							{ // compute a MAC address that distinguishes different devices as good as possible but is constant for each one
+								UInt32 fcs=CRC32_INITFCS;
+								fcs=fcs_compute32((unsigned char *)vendorString, strlen(vendorString), fcs);
+								fcs=fcs_compute32((unsigned char *)modelString, strlen(modelString), fcs);
+								fcs=fcs_compute32((unsigned char *)serialString, strlen(serialString), fcs);
+								fEaddr[0]=0x40;
+								fEaddr[1]=0x00;
+								fEaddr[2]=fcs>>24;
+								fEaddr[3]=fcs>>16;
+								fEaddr[4]=fcs>>8;
+								fEaddr[5]=fcs>>0;
+							}
 #endif
-				IOLog("AJZaurusUSB::getFunctionalDescriptors - Ethernet address (string %d): %02x.%02x.%02x.%02x.%02x.%02x\n",
-                      ENETFDesc->iMACAddress,
-                      (unsigned) fEaddr[0],
-                      (unsigned) fEaddr[1],
-                      (unsigned) fEaddr[2],
-                      (unsigned) fEaddr[3],
-                      (unsigned) fEaddr[4],
-                      (unsigned) fEaddr[5]                      
-                      );
-                //                LogData(kUSBAnyDirn, 6, fEaddr);
-                
-                fMax_Block_Size = USBToHostWord(*(UInt16 *)ENETFDesc->wMaxSegmentSize);
-                IOLog("AJZaurusUSB::getFunctionalDescriptors - Maximum segment size %d\n", fMax_Block_Size);
-				IOSleep(20);
-				return true;	// all ok!
-                }
-			IOLog("AJZaurusUSB::getFunctionalDescriptors - Error retrieving Ethernet address\n");
-            } 
+							IOLog("AJZaurusUSB::getFunctionalDescriptors - Ethernet address (string %d): %02x.%02x.%02x.%02x.%02x.%02x\n",
+								  ENETFDesc->iMACAddress,
+								  (unsigned) fEaddr[0],
+								  (unsigned) fEaddr[1],
+								  (unsigned) fEaddr[2],
+								  (unsigned) fEaddr[3],
+								  (unsigned) fEaddr[4],
+								  (unsigned) fEaddr[5]                      
+								  );
+							//                LogData(kUSBAnyDirn, 6, fEaddr);
+							
+							fMax_Block_Size = USBToHostWord(*(UInt16 *)ENETFDesc->wMaxSegmentSize);
+							IOLog("AJZaurusUSB::getFunctionalDescriptors - Maximum segment size %d\n", fMax_Block_Size);
+							IOSleep(20);
+							return true;	// all ok!
+						}
+					IOLog("AJZaurusUSB::getFunctionalDescriptors - Error retrieving Ethernet address\n");
+				} 
         }
     
 	IOLog("AJZaurusUSB::getFunctionalDescriptors -  Using defaults 'cause all else failed\n");
-
+	
 	fOutputPktsOK = false;
 	fInputPktsOK = false;
 	fOutputErrsOK = false;
@@ -940,12 +940,10 @@ bool net_lucid_cake_driver_AJZaurusUSB::USBTransmitPacket(mbuf_t packet)
         m = mbuf_next(m);
         }
     
-    // AJ: Calculate size including CRC and padding
-    // -->
-    checksum_length = fChecksum?4:0;
+    checksum_length = fChecksum?4:0;	// Calculate size including CRC and padding
     if (fPadded)
         { // we need to pad so that after appending the CRC we have a multiple of packetsize less one
-        new_pkt_length = fOutPacketSize * ( ((total_pkt_length + checksum_length) / fOutPacketSize) + 1) - 1;
+			new_pkt_length = fOutPacketSize * ( ((total_pkt_length + checksum_length) / fOutPacketSize) + 1) - 1;
         }
     else
         {
@@ -954,7 +952,7 @@ bool net_lucid_cake_driver_AJZaurusUSB::USBTransmitPacket(mbuf_t packet)
         else
             new_pkt_length = total_pkt_length;
         }
-    // <--
+	
 #if 0
     IOLog("AJZaurusUSB::USBTransmitPacket %p padded:%d checksum:%d length:%lu mbufs:%lu\n", packet, fPadded, fChecksum, new_pkt_length, numbufs);
 #endif
@@ -963,34 +961,33 @@ bool net_lucid_cake_driver_AJZaurusUSB::USBTransmitPacket(mbuf_t packet)
         IOLog("AJZaurusUSB::USBTransmitPacket - Bad packet size\n");	// Note for now and revisit later
         if (fOutputErrsOK)
             fpNetStats->outputErrors++;
-        // OSIncrementAtomic(&fSyncCount);
         return false;
         }
-
+	
     // Find a free ouput buffer in the pool
-
+	
     IOSimpleLockLock(fLock);
     while(TRUE)
         { // try to get a buffer
-        for(poolIndx=0; poolIndx<kOutBufPool; poolIndx++)
-			{
-            if(fPipeOutBuff[poolIndx].m == NULL)
-                break;  // got one
-			}
-        if(poolIndx<kOutBufPool)
-            break;  // break while loop
-        tryCount++;
-        if(tryCount > kOutBuffThreshold)
-            { // waited too long
-            IOLog("AJZaurusUSB::USBTransmitPacket - Exceeded output buffer wait threshold - output stalled\n");
-            if(fOutputErrsOK)
-                fpNetStats->outputErrors++;
-            IOSimpleLockUnlock(fLock);
-            fOutputStalled = true;
-            return false;
-            }
-        IOLog("AJZaurusUSB::USBTransmitPacket - Waiting %d-th time for output buffer\n", tryCount);
-        IOSleep(1);	// sleep 1 second
+			for(poolIndx=0; poolIndx<kOutBufPool; poolIndx++)
+				{
+				if(fPipeOutBuff[poolIndx].m == NULL)
+					break;  // got one
+				}
+			if(poolIndx<kOutBufPool)
+				break;  // break while loop
+			tryCount++;
+			if(tryCount > kOutBuffThreshold)
+				{ // waited too long
+					IOLog("AJZaurusUSB::USBTransmitPacket - Exceeded output buffer wait threshold - output stalled\n");
+					if(fOutputErrsOK)
+						fpNetStats->outputErrors++;
+					IOSimpleLockUnlock(fLock);
+					fOutputStalled = true;
+					return false;
+				}
+			IOLog("AJZaurusUSB::USBTransmitPacket - Waiting %d-th time for output buffer\n", tryCount);
+			IOSleep(1);	// sleep 1 second
         }
     fPipeOutBuff[poolIndx].m = packet;
     ++fDataCount;
@@ -1001,26 +998,22 @@ bool net_lucid_cake_driver_AJZaurusUSB::USBTransmitPacket(mbuf_t packet)
     fOutputStalled = false;
     IOSimpleLockUnlock(fLock);
     
-    // Start filling in the send buffer
-    // AJ: modified to do CRC calculation and padding
-    // -->
     fcs = CRC32_INITFCS;
     m = packet;							// start with the first mbuf of the packet
     rTotal = 0;							// running total				
-    do
+    while(m)
         {  
-            if (mbuf_len(m) == 0)					// Ignore zero length mbufs
-                continue;
-            fcs = fcs_memcpy32(&(fPipeOutBuff[poolIndx].pipeOutBuffer[rTotal]), (unsigned char*) mbuf_data(m), mbuf_len(m), fcs);
-            //bcopy(mtod(m, unsigned char *), &fPipeOutBuff[poolIndx].pipeOutBuffer[rTotal], mbuf_len(m));
-            rTotal += mbuf_len(m);
-            
-        } while ((m = mbuf_next(m)) != 0);
+            if (mbuf_len(m) > 0)					// Ignore zero length mbufs
+				{
+				fcs = fcs_memcpy32(&(fPipeOutBuff[poolIndx].pipeOutBuffer[rTotal]), (unsigned char*) mbuf_data(m), mbuf_len(m), fcs);
+				rTotal += mbuf_len(m);
+				}
+            m = mbuf_next(m);
+        }
     if ((pad = new_pkt_length - rTotal - checksum_length) > 0)
-        {
-        // pad to required length less four (CRC), copy fcs and append pad byte if required
-        fcs = fcs_pad32(&(fPipeOutBuff[poolIndx].pipeOutBuffer[rTotal]), pad, fcs);
-        rTotal += pad;
+        { // pad to required length less four (CRC), copy fcs and append pad byte if required
+			fcs = fcs_pad32(&(fPipeOutBuff[poolIndx].pipeOutBuffer[rTotal]), pad, fcs);
+			rTotal += pad;
         }
     fcs = ~fcs;
     if (fChecksum)
@@ -1042,11 +1035,7 @@ bool net_lucid_cake_driver_AJZaurusUSB::USBTransmitPacket(mbuf_t packet)
 #if 0
     IOLog("AJZaurusUSB::USBTransmitPacket - length=%lu checksum=%08lx\n", rTotal, fcs);
 #endif
-    // <--
-    
-//    LogData(kUSBOut, rTotal, fPipeOutBuff[poolIndx].pipeOutBuffer);
-    
-    //fPipeOutBuff[poolIndx].m = packet;
+	
     fPipeOutBuff[poolIndx].writeCompletionInfo.parameter = (void *)poolIndx;
     fPipeOutBuff[poolIndx].pipeOutMDP->setLength(rTotal);
     ior = fOutPipe->Write(fPipeOutBuff[poolIndx].pipeOutMDP, 
@@ -1056,12 +1045,11 @@ bool net_lucid_cake_driver_AJZaurusUSB::USBTransmitPacket(mbuf_t packet)
 						  &(fPipeOutBuff[poolIndx].writeCompletionInfo));
     if (ior != kIOReturnSuccess)
         {
-        //OSIncrementAtomic(&fSyncCount);
         IOLog("AJZaurusUSB::USBTransmitPacket - Write failed: ior=%d %s\n", ior, this->stringFromReturn(ior));
         if (ior == kIOUSBPipeStalled)
             {
             IOLog("AJZaurusUSB::USBTransmitPacket - Pipe stalled\n");
-            //OSDecrementAtomic(&fSyncCount);
+			
             fOutPipe->ClearPipeStall(true);  // reset and try again
             ior = fOutPipe->Write(fPipeOutBuff[poolIndx].pipeOutMDP, 
 								  5000,
@@ -1070,7 +1058,7 @@ bool net_lucid_cake_driver_AJZaurusUSB::USBTransmitPacket(mbuf_t packet)
 								  &(fPipeOutBuff[poolIndx].writeCompletionInfo));
             if (ior != kIOReturnSuccess)
                 {
-                //OSIncrementAtomic(&fSyncCount);
+				
                 IOLog("AJZaurusUSB::USBTransmitPacket - Write really failed: %d %s\n", ior, this->stringFromReturn(ior));
                 if(fOutputErrsOK)
                     fpNetStats->outputErrors++;
@@ -1083,11 +1071,11 @@ bool net_lucid_cake_driver_AJZaurusUSB::USBTransmitPacket(mbuf_t packet)
             }
         else
             { // other error
-            IOSimpleLockLock(fLock);
-            --fDataCount;
-            fPipeOutBuff[poolIndx].m = NULL;
-            IOSimpleLockUnlock(fLock);
-            return false;
+				IOSimpleLockLock(fLock);
+				--fDataCount;
+				fPipeOutBuff[poolIndx].m = NULL;
+				IOSimpleLockUnlock(fLock);
+				return false;
             }
         }
     
@@ -1228,18 +1216,15 @@ bool net_lucid_cake_driver_AJZaurusUSB::USBSetPacketFilter()
         {
         IOLog("AJZaurusUSB::USBSetPacketFilter - DeviceRequest error for %d: %d %s\n", MER->bRequest, rc, this->stringFromReturn(rc));
         if (rc == kIOUSBPipeStalled)
-            {
-            
-            // Clear the stall and try it once more
-            
-            fpDevice->GetPipeZero()->ClearPipeStall(true);
-            rc = fpDevice->DeviceRequest(MER, &fMERCompletionInfo);
-            if (rc != kIOReturnSuccess)
-                {
-                IOLog("AJZaurusUSB::USBSetPacketFilter - DeviceRequest for %d, error a second time: %d %s\n", MER->bRequest, rc, this->stringFromReturn(rc));
-                IOFree(MER, sizeof(IOUSBDevRequest));
-                return false;
-                }
+            { // Clear the stall and try it once more
+				fpDevice->GetPipeZero()->ClearPipeStall(true);
+				rc = fpDevice->DeviceRequest(MER, &fMERCompletionInfo);
+				if (rc != kIOReturnSuccess)
+					{
+					IOLog("AJZaurusUSB::USBSetPacketFilter - DeviceRequest for %d, error a second time: %d %s\n", MER->bRequest, rc, this->stringFromReturn(rc));
+					IOFree(MER, sizeof(IOUSBDevRequest));
+					return false;
+					}
             }
         }
     
@@ -1279,9 +1264,6 @@ IOReturn net_lucid_cake_driver_AJZaurusUSB::clearPipeStall(IOUSBPipe *thePipe)
     else
         IOLog("AJZaurusUSB::clearPipeStall - Pipe not stalled: status=%d\n", pipeStatus);
     
-    // rewritten to prevent nasty issues when doing synchronous stuff here
-    //rtn = thePipe->ClearPipeStall(true);
-    
     return rtn;
     
 }/* end clearPipeStall */
@@ -1306,7 +1288,7 @@ void net_lucid_cake_driver_AJZaurusUSB::resetDevice(void)
     
 	if(!fpDevice)
 		return;
-
+	
 	if(fpDevice->GetDeviceStatus(&status) != kIOReturnSuccess)	// try to get device status
 		{
         IOLog("AJZaurusUSB::resetDevice - could not get device status; needs to reset and reenumerate\n");
@@ -1316,7 +1298,7 @@ void net_lucid_cake_driver_AJZaurusUSB::resetDevice(void)
 		else
 			fpDevice->ReEnumerateDevice(0);
 		}
-
+	
 }/* end resetDevice */
 
 /****************************************************************************************************/
@@ -1513,25 +1495,25 @@ bool net_lucid_cake_driver_AJZaurusUSB::allocateResources()
 	else
 		{ // there is a comm pipe
 #if 0
-		IOLog("AJZaurusUSB::allocateResources - comm pipe - myPacketSize=%u interval=%u pipe=%p\n", epReq.maxPacketSize, epReq.interval, fCommPipe);
+			IOLog("AJZaurusUSB::allocateResources - comm pipe - myPacketSize=%u interval=%u pipe=%p\n", epReq.maxPacketSize, epReq.interval, fCommPipe);
 #endif
-		// Allocate Memory Descriptor Pointer with memory for the Comm pipe:
-        
-		fCommPipeMDP = IOBufferMemoryDescriptor::withCapacity(COMM_BUFF_SIZE, kIODirectionIn);
-		if (!fCommPipeMDP)
-			return false;
-        
-		fCommPipeMDP->setLength(COMM_BUFF_SIZE);
-		fCommPipeBuffer = (UInt8*)fCommPipeMDP->getBytesNoCopy();
+			// Allocate Memory Descriptor Pointer with memory for the Comm pipe:
+			
+			fCommPipeMDP = IOBufferMemoryDescriptor::withCapacity(COMM_BUFF_SIZE, kIODirectionIn);
+			if (!fCommPipeMDP)
+				return false;
+			
+			fCommPipeMDP->setLength(COMM_BUFF_SIZE);
+			fCommPipeBuffer = (UInt8*)fCommPipeMDP->getBytesNoCopy();
 #if 0
-		IOLog("AJZaurusUSB::allocateResources - comm buffer %p\n", fCommPipeBuffer);
+			IOLog("AJZaurusUSB::allocateResources - comm buffer %p\n", fCommPipeBuffer);
 #endif
 		}
-
+	
     // Allocate Memory Descriptor Pointer with memory for the data-in bulk pipe:
     
 	fMax_Block_Size = 64*((fMax_Block_Size+(64-1))/64);	// 64 is the Max Block Size we should read from the endpoint descriptor
-
+	
     fPipeInMDP = IOBufferMemoryDescriptor::withCapacity(fMax_Block_Size, kIODirectionIn);
     if (!fPipeInMDP)
         return false;
@@ -1585,19 +1567,19 @@ void net_lucid_cake_driver_AJZaurusUSB::releaseResources()
         {
         if (fPipeOutBuff[i].pipeOutMDP)	
             { 
-            fPipeOutBuff[i].pipeOutMDP->release();	
-            fPipeOutBuff[i].pipeOutMDP = NULL;
+				fPipeOutBuff[i].pipeOutMDP->release();	
+				fPipeOutBuff[i].pipeOutMDP = NULL;
             }
         }
     if (fPipeInMDP)
         { 
-        fPipeInMDP->release();	
-        fPipeInMDP = NULL; 
+			fPipeInMDP->release();	
+			fPipeInMDP = NULL; 
         }
     if (fCommPipeMDP)	
         { 
-        fCommPipeMDP->release();	
-        fCommPipeMDP = NULL; 
+			fCommPipeMDP->release();	
+			fCommPipeMDP = NULL; 
         }
     
 }/* end releaseResources */

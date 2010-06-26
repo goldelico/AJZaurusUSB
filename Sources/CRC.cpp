@@ -21,7 +21,7 @@
  with same name as enclosing class" will be issued. This warning can be ignored.
  
  Copyright:		Copyright 2002, 2003 Andreas Junghans
- Copyright 2004-2006 H. Nikolaus Schaller
+ Copyright 2004-2010 H. Nikolaus Schaller
  
  Disclaimer:		This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by

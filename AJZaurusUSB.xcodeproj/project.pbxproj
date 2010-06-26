@@ -23,21 +23,17 @@
 /* Begin PBXBuildFile section */
 		EE0AD1610A9F39480042DD37 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		EE0AD16E0A9F39780042DD37 /* Driver.h in Headers */ = {isa = PBXBuildFile; fileRef = EE0AD16D0A9F39780042DD37 /* Driver.h */; };
-		EE0AD1790A9F48C30042DD37 /* Client.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE4572000A795A6700A7ACF7 /* Client.cpp */; };
+		EE0AD1790A9F48C30042DD37 /* NetworkClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE4572000A795A6700A7ACF7 /* NetworkClient.cpp */; };
 		EE0AD17A0A9F48C30042DD37 /* CRC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE4571F90A795A2500A7ACF7 /* CRC.cpp */; };
 		EE0AD17B0A9F48C30042DD37 /* Glue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE0A61350A9DE1B90042DD37 /* Glue.cpp */; };
-		EE0AD17C0A9F48C30042DD37 /* Logging.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE4572010A795A8200A7ACF7 /* Logging.cpp */; };
-		EE0AD17D0A9F48C30042DD37 /* Power.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE4572130A795AE900A7ACF7 /* Power.cpp */; };
-		EE0AD17E0A9F48C30042DD37 /* Provider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE4571FA0A795A3300A7ACF7 /* Provider.cpp */; };
+		EE0AD17E0A9F48C30042DD37 /* USBProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE4571FA0A795A3300A7ACF7 /* USBProvider.cpp */; };
 		EE0AD17F0A9F48CE0042DD37 /* CRC.h in Headers */ = {isa = PBXBuildFile; fileRef = EE0A96570A9E40490042DD37 /* CRC.h */; };
-		EE0AD1800A9F48CE0042DD37 /* Logging.h in Headers */ = {isa = PBXBuildFile; fileRef = EE0A96540A9E3FC00042DD37 /* Logging.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; lineEnding = 0; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EE03E0EE092D1CBA00893140 /* README.rtfd */ = {isa = PBXFileReference; lastKnownFileType = wrapper.rtfd; path = README.rtfd; sourceTree = "<group>"; };
 		EE0A61350A9DE1B90042DD37 /* Glue.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Glue.cpp; path = Sources/Glue.cpp; sourceTree = "<group>"; };
-		EE0A96540A9E3FC00042DD37 /* Logging.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Logging.h; path = Sources/Logging.h; sourceTree = "<group>"; };
 		EE0A96570A9E40490042DD37 /* CRC.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CRC.h; path = Sources/CRC.h; sourceTree = "<group>"; };
 		EE0AD16B0A9F39480042DD37 /* AJZaurusUSB.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AJZaurusUSB.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE0AD16C0A9F39480042DD37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -52,10 +48,8 @@
 		EE1441910FC598B90071828E /* Versions.def */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Versions.def; path = ../Versions.def; sourceTree = SOURCE_ROOT; };
 		EE1450EB0A14F39D00C93F94 /* HISTORY.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = HISTORY.rtf; sourceTree = "<group>"; };
 		EE4571F90A795A2500A7ACF7 /* CRC.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CRC.cpp; path = Sources/CRC.cpp; sourceTree = "<group>"; };
-		EE4571FA0A795A3300A7ACF7 /* Provider.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Provider.cpp; path = Sources/Provider.cpp; sourceTree = "<group>"; };
-		EE4572000A795A6700A7ACF7 /* Client.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Client.cpp; path = Sources/Client.cpp; sourceTree = "<group>"; };
-		EE4572010A795A8200A7ACF7 /* Logging.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Logging.cpp; path = Sources/Logging.cpp; sourceTree = "<group>"; };
-		EE4572130A795AE900A7ACF7 /* Power.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Power.cpp; path = Sources/Power.cpp; sourceTree = "<group>"; };
+		EE4571FA0A795A3300A7ACF7 /* USBProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = USBProvider.cpp; path = Sources/Provider.cpp; sourceTree = "<group>"; };
+		EE4572000A795A6700A7ACF7 /* NetworkClient.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = NetworkClient.cpp; path = Sources/Client.cpp; sourceTree = "<group>"; };
 		EE75D7F10B09D5E000601180 /* prepare.gdb */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.sh; path = prepare.gdb; sourceTree = "<group>"; };
 		EEE642BC0D7D530900DB8215 /* AJZaurusUSB.pmdoc */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AJZaurusUSB.pmdoc; sourceTree = "<group>"; };
 		F59C308D02C2AF4001000102 /* Kernel.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Kernel.framework; path = /System/Library/Frameworks/Kernel.framework; sourceTree = "<absolute>"; };
@@ -107,15 +101,12 @@
 		EE0A612A0A9DE1650042DD37 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				EE4572000A795A6700A7ACF7 /* Client.cpp */,
+				EE0AD16D0A9F39780042DD37 /* Driver.h */,
+				EE4572000A795A6700A7ACF7 /* NetworkClient.cpp */,
 				EE0A96570A9E40490042DD37 /* CRC.h */,
 				EE4571F90A795A2500A7ACF7 /* CRC.cpp */,
-				EE0AD16D0A9F39780042DD37 /* Driver.h */,
 				EE0A61350A9DE1B90042DD37 /* Glue.cpp */,
-				EE0A96540A9E3FC00042DD37 /* Logging.h */,
-				EE4572010A795A8200A7ACF7 /* Logging.cpp */,
-				EE4572130A795AE900A7ACF7 /* Power.cpp */,
-				EE4571FA0A795A3300A7ACF7 /* Provider.cpp */,
+				EE4571FA0A795A3300A7ACF7 /* USBProvider.cpp */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
@@ -152,7 +143,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				EE0AD17F0A9F48CE0042DD37 /* CRC.h in Headers */,
-				EE0AD1800A9F48CE0042DD37 /* Logging.h in Headers */,
 				EE0AD16E0A9F39780042DD37 /* Driver.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -251,7 +241,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# shell script goes here\nopen -a Terminal cd .\nexit 0";
+			shellScript = "# shell script goes here\n\n### should be run from a terminal since it will ask for password (sudo)\n\nmake load\nexit 0";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -260,12 +250,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE0AD1790A9F48C30042DD37 /* Client.cpp in Sources */,
+				EE0AD1790A9F48C30042DD37 /* NetworkClient.cpp in Sources */,
 				EE0AD17A0A9F48C30042DD37 /* CRC.cpp in Sources */,
 				EE0AD17B0A9F48C30042DD37 /* Glue.cpp in Sources */,
-				EE0AD17C0A9F48C30042DD37 /* Logging.cpp in Sources */,
-				EE0AD17D0A9F48C30042DD37 /* Power.cpp in Sources */,
-				EE0AD17E0A9F48C30042DD37 /* Provider.cpp in Sources */,
+				EE0AD17E0A9F48C30042DD37 /* USBProvider.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -475,6 +463,8 @@
 					ppc,
 					i386,
 				);
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_VERSION = 4.0;
 				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
@@ -487,6 +477,7 @@
 					ppc,
 					i386,
 				);
+				GCC_VERSION = 4.0;
 				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
@@ -499,6 +490,7 @@
 					ppc,
 					i386,
 				);
+				GCC_VERSION = 4.0;
 				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
