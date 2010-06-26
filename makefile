@@ -34,7 +34,10 @@ AJZaurusUSB: patch-version-number
 	sudo chgrp -R wheel pkg/AJZaurusUSB.kext
 	sudo chmod -R go-w pkg/AJZaurusUSB.kext
 
-tgz: pkg src
+pkg: AJZaurusUSB
+	/Developer/usr/bin/packagemaker --doc AJZaurusUSB.pmdoc --version $(VERSION_AJZaurusUSB) --target 10.4 --out AJZaurusUSB.pkg
+	
+tgz: pkg
 	@echo "Packing AJZaurusUSB-$(VERSION_AJZaurusUSB).tgz"
 	tar cvzf AJZaurusUSB-$(VERSION_AJZaurusUSB).tgz --exclude .svn ./AJZaurusUSB.pkg ./COPYING ./WELCOME.rtf ./README.rtfd ./HISTORY.rtf
 
@@ -52,7 +55,7 @@ src: clean
 		./Sources \
 		./*.plist \
 		./*.xcode* ./*.lproj \
-		./*.pmproj ./*.pmdoc \
+		./*.pmdoc \
 		./*.term
 
 help:
@@ -101,9 +104,6 @@ uninstall:
 	@echo "****************************************************"
 	@echo "You should now reboot to really uninstall the driver"
 	@echo "****************************************************"
-
-pkg: AJZaurusUSB
-	open AJZaurusUSB.pmdoc
 
 # experimental - not working yet
 

@@ -35,13 +35,12 @@ Or type
 
 and reboot!
 
-To test a freshly built version, connect the USB device to your Mac and
-turn it on. Then type
+To test a freshly built version, type
 
   make load
 
-inside a terminal window to load the driver. Switching on the USB device
-should now initialize the driver.
+inside a terminal window to load the driver. Plugging in and switching on
+the USB device should now initialize the driver.
 
 After you're finished, type
 
@@ -78,12 +77,8 @@ to make a distribution package that contains everything.
 4. Debugging
 --------------------------------
 
-You need two Macintosh computers connected by an Ethernet cable. Both must
+You need two Macintosh computers connected by a Firewire cable. Both must
 have the same Mac OS X release version, but you can mix Intel and PowerPC.
-
-Make sure the Ethernet works and is the only connection (i.e. no WLAN!).
-Identify the ZeroConf name of the debug machine and write that into the makefile
-(TARGET) on the developer machine. Enable Remote Login (ssh) on the debug machine.
 
 Then to enable kernel debugging and switch a multi-core machine to use 1 CPU only,
 
@@ -93,4 +88,4 @@ To start a debugging session,
 
   make gdb
 
-Updated: 17 Apr 2009
+Updated: 26 Jun 2010

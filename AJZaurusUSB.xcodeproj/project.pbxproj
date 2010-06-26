@@ -39,7 +39,6 @@
 		EE0AD16C0A9F39480042DD37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EE0AD16D0A9F39780042DD37 /* Driver.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Driver.h; path = Sources/Driver.h; sourceTree = "<group>"; };
 		EE0AD2810AA02AC20042DD37 /* AJZaurusUSB.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = AJZaurusUSB.jpg; sourceTree = "<group>"; };
-		EE0AD2820AA02AD20042DD37 /* AJZaurusUSB.pmproj */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = AJZaurusUSB.pmproj; sourceTree = "<group>"; };
 		EE123DFF0808620400997671 /* COPYING */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = COPYING; sourceTree = "<group>"; };
 		EE123E000808620400997671 /* COPYING.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = COPYING.rtf; sourceTree = "<group>"; };
 		EE123E020808620400997671 /* HOWTO-MAKE */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "HOWTO-MAKE"; sourceTree = "<group>"; };
@@ -116,7 +115,6 @@
 			children = (
 				EE0AD2810AA02AC20042DD37 /* AJZaurusUSB.jpg */,
 				EEE642BC0D7D530900DB8215 /* AJZaurusUSB.pmdoc */,
-				EE0AD2820AA02AD20042DD37 /* AJZaurusUSB.pmproj */,
 				EE123E000808620400997671 /* COPYING.rtf */,
 				EE03E0EE092D1CBA00893140 /* README.rtfd */,
 				EE123E050808620400997671 /* WELCOME.rtf */,
