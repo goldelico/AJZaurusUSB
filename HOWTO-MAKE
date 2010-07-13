@@ -1,0 +1,91 @@
+======================================
+MAKE Handhelds-USB driver for Mac OS X
+======================================
+
+0. About
+--------
+
+This is an experimental driver (or technically speaking a "kernel extension")
+that allows Mac OS X to communicate with a Sharp Zaurus or other Handheld Devices
+over USB.
+
+1. How to compile
+-----------------
+
+- Select "Compile" as the Active Target.
+- press Build - this will open a Terminal window.
+- Type 'make' in that Terminal.
+- You will be asked for the root password since AJZaurusUSB must be compiled as root.
+
+NOTE: for testing if the code compiles, you can select the AJZaurusUSB target and simply Build.
+But it will fail with a 'permission denied' error when trying to create the package.
+
+2. Testing
+----------
+
+For testing source code modifications, DON'T install the driver since it
+will confuse the kext loader and sometimes you will load the old one.
+
+If you already have, delete the folder "AJZaurusUSB.kext" located at
+"/System/Library/Extensions" and reboot.
+
+Or type
+
+  make uninstall
+
+and reboot!
+
+To test a freshly built version, type
+
+  make load
+
+inside a terminal window to load the driver. Plugging in and switching on
+the USB device should now initialize the driver.
+
+After you're finished, type
+
+  make unload
+
+and afterwards turn off or disconnect the device. To see what's going on,
+you should have an open console window during testing or a terminal window
+executing "tail -f /var/log/system.log".
+
+
+3. Creating an installer package
+--------------------------------
+
+Type
+
+  make pkg
+  
+This will first build the driver and then load the file "AJZaurusUSB.pmproj"
+with the Package Maker application (included in Apple's developer tools).
+1. Go to the "Package Version" tab and edit the version number
+2. Choose "Build..." from the "Project" menu to create the installer package
+and save as "AJZaurusUSB.pkg" in the working directory.
+
+Note that it will complain a little about a missing file "AJZaurusUSB.jpg".
+This is the background image of the installer which is not included in the
+source code since it has a different license.
+
+Finally type
+  
+  make tgz
+
+to make a distribution package that contains everything.
+
+4. Debugging
+--------------------------------
+
+You need two Macintosh computers connected by a Firewire cable. Both must
+have the same Mac OS X release version, but you can mix Intel and PowerPC.
+
+Then to enable kernel debugging and switch a multi-core machine to use 1 CPU only,
+
+  make enable-kdb
+
+To start a debugging session,
+
+  make gdb
+
+Updated: 26 Jun 2010
