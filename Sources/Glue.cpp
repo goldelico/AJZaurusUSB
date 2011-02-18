@@ -622,9 +622,10 @@ bool net_lucid_cake_driver_AJZaurusUSB::createMediumTables()
     for (i = 0; i < sizeof(mediumTable) / sizeof(mediumTable[0]); i++ )
         {
         medium = IONetworkMedium::medium(mediumTable[i].type, mediumTable[i].speed);
-        if (medium && (medium->getSpeed() <= maxSpeed))
+        if (medium)
             {
-            IONetworkMedium::addMedium(fMediumDict, medium);
+			if(medium->getSpeed() <= maxSpeed)
+				IONetworkMedium::addMedium(fMediumDict, medium);
             medium->release();
             }
         }

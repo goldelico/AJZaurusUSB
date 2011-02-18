@@ -1,4 +1,4 @@
-include ../Versions.def
+include ../../../Versions.def
 
 .PHONY:	all AJZaurusUSB tgz clean src pkg help check load unload install uninstall enable-kdb disable-kdb gdb
 
