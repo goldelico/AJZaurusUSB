@@ -44,7 +44,7 @@
 		EE123E020808620400997671 /* HOWTO-MAKE */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "HOWTO-MAKE"; sourceTree = "<group>"; };
 		EE123E030808620400997671 /* makefile */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.make; path = makefile; sourceTree = "<group>"; };
 		EE123E050808620400997671 /* WELCOME.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = WELCOME.rtf; sourceTree = "<group>"; };
-		EE1441910FC598B90071828E /* Versions.def */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Versions.def; path = ../Versions.def; sourceTree = SOURCE_ROOT; };
+		EE1441910FC598B90071828E /* Versions.def */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Versions.def; path = ../../../Versions.def; sourceTree = SOURCE_ROOT; };
 		EE1450EB0A14F39D00C93F94 /* HISTORY.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = HISTORY.rtf; sourceTree = "<group>"; };
 		EE4571F90A795A2500A7ACF7 /* CRC.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CRC.cpp; path = Sources/CRC.cpp; sourceTree = "<group>"; };
 		EE4571FA0A795A3300A7ACF7 /* USBProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = USBProvider.cpp; path = Sources/Provider.cpp; sourceTree = "<group>"; };

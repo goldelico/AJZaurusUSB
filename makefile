@@ -1,4 +1,6 @@
-include ../../../Versions.def
+VERSION_AJZaurusUSB=0.6.0
+
+-include ../../../Versions.def	# override if available
 
 .PHONY:	all AJZaurusUSB tgz clean src pkg help check load unload install uninstall enable-kdb disable-kdb gdb
 
