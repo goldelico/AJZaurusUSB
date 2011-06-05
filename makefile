@@ -85,7 +85,7 @@ check:
 	
 unload:
 	@echo "Unloading AJZaurusUSB"
-	sudo kextunload pkg/AJZaurusUSB.kext
+	sudo kextunload -b net.lucid-cake.driver.AJZaurusUSB
 
 install:
 	# permanently install on your local machine
@@ -100,7 +100,7 @@ install:
 uninstall:
 	# uninstall existing driver
 	@echo "Unloading AJZaurusUSB"
-	- sudo kextunload /System/Library/Extensions/AJZaurusUSB.kext
+	- sudo kextunload -b net.lucid-cake.driver.AJZaurusUSB
 	@echo "Uninstalling AJZaurusUSB"
 	sudo rm -rf /System/Library/Extensions/AJZaurusUSB.kext
 	@echo "****************************************************"

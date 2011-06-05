@@ -7,7 +7,7 @@
 <key>CFBundleExecutable</key>
 <string>AJZaurusUSB</string>
 <key>CFBundleGetInfoString</key>
-<string>AJZaurusUSB version 0.6.0	, Copyright 2002-2004 Andreas Junghans &amp; 2005-2009 Nikolaus Schaller, based on USBCDCEthernet, Copyright 1998-2002 Apple</string>
+<string>AJZaurusUSB version 0.6.0, Copyright 2002-2004 Andreas Junghans &amp; 2005-2009 Nikolaus Schaller, based on USBCDCEthernet, Copyright 1998-2002 Apple</string>
 <key>CFBundleIconFile</key>
 <string></string>
 <key>CFBundleIdentifier</key>
@@ -19,11 +19,11 @@
 <key>CFBundlePackageType</key>
 <string>KEXT</string>
 <key>CFBundleShortVersionString</key>
-<string>0.6.0	</string>
+<string>0.6.0</string>
 <key>CFBundleSignature</key>
 <string>????</string>
 <key>CFBundleVersion</key>
-<string>0.6.0	</string>
+<string>0.6.0</string>
 <key>IOKitPersonalities</key>
 <dict>
 <key>E28 E2831</key>
@@ -217,7 +217,7 @@
 <key>IOProviderClass</key>
 <string>IOUSBDevice</string>
 <key>idProduct</key>
-<integer>42154</integer>
+<integer>42146</integer>
 <key>idVendor</key>
 <integer>1317</integer>
 </dict>
