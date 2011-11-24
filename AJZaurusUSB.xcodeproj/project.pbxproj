@@ -177,7 +177,6 @@
 			isa = PBXProject;
 			buildConfigurationList = EE4D234F09858ABD00136A23 /* Build configuration list for PBXProject "AJZaurusUSB" */;
 			compatibilityVersion = "Xcode 2.4";
-			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
