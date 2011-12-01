@@ -363,7 +363,7 @@ void net_lucid_cake_driver_AJZaurusUSB::merWriteComplete(void *obj, void *param,
 #endif
 			}
         else 
-            IOLog("AJZaurusUSB::merWriteComplete (%d) - io err: %d\n", MER->bRequest, rc);
+            IOLog("AJZaurusUSB::merWriteComplete (%d) - io err: %d %s\n", MER->bRequest, rc, me->stringFromReturn(rc));
         dataLen = MER->wLength;
 #if 0
         IOLog("AJZaurusUSB::merWriteComplete - data length %d\n", dataLen);
@@ -382,7 +382,7 @@ void net_lucid_cake_driver_AJZaurusUSB::merWriteComplete(void *obj, void *param,
 #endif
 			}
         else 
-            IOLog("AJZaurusUSB::merWriteComplete (unknown) - io err: %d\n", rc);
+            IOLog("AJZaurusUSB::merWriteComplete (unknown) - io err: %d %s\n", rc, me->stringFromReturn(rc));
         }	
 }/* end merWriteComplete */
 
@@ -461,7 +461,7 @@ void net_lucid_cake_driver_AJZaurusUSB::statsWriteComplete(void *obj, void *para
             
             }
         else
-            IOLog("AJZaurusUSB::statsWriteComplete - request %d io err:%d\n", STREQ->bRequest, rc);
+            IOLog("AJZaurusUSB::statsWriteComplete - request %d io err:%d %s\n", STREQ->bRequest, rc, me->stringFromReturn(rc));
         IOFree(STREQ, sizeof(IOUSBDevRequest));
         }
     else
@@ -469,7 +469,7 @@ void net_lucid_cake_driver_AJZaurusUSB::statsWriteComplete(void *obj, void *para
         if(rc == kIOReturnSuccess)
             IOLog("AJZaurusUSB::statsWriteComplete (request unknown) - remaining=%lu\n", remaining);
         else
-            IOLog("AJZaurusUSB::statsWriteComplete (request unknown) - io err: %d\n", rc);
+            IOLog("AJZaurusUSB::statsWriteComplete (request unknown) - io err: %d %s\n", rc, me->stringFromReturn(rc));
         }
     
     me->fStatValue = 0;

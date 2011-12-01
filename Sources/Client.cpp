@@ -701,7 +701,7 @@ void net_lucid_cake_driver_AJZaurusUSB::timeoutOccurred(IOTimerEventSource *time
             rc = fpDevice->DeviceRequest(STREQ, &fStatsCompletionInfo);
             if (rc != kIOReturnSuccess)
                 {
-                IOLog("AJZaurusUSB::timeoutOccurred - Error issueing DeviceRequest for %d: %d\n", STREQ->bRequest, rc);
+                IOLog("AJZaurusUSB::timeoutOccurred - Error issueing DeviceRequest for %d: %d %s\n", STREQ->bRequest, rc, me->stringFromReturn(rc));
                 IOFree(STREQ, sizeof(IOUSBDevRequest));
                 }
             else
