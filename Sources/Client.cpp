@@ -395,137 +395,136 @@ IOReturn net_lucid_cake_driver_AJZaurusUSB::message(UInt32 type, IOService *prov
     if (!fpDevice)	// no USB provider
         return kIOReturnUnsupported;
 	
-    switch (type)
-	{
-		// general messages
+    switch (type) {
+			// general messages
         case kIOMessageServiceIsTerminated:
-		IOLog("AJZaurusUSB::message - kIOMessageServiceIsTerminated ready=%d type=%lu\n", fReady, type);
-		
-		if (fReady)
-			{
-			if (!fTerminate)		// Check if we're already being terminated
-				{ 
-                    IOLog("AJZaurusUSB::message - hardcoded message!\n");
-                    // NOTE! This call below depends on the hard coded path of this KEXT. Make sure
-                    // that if the KEXT moves, this path is changed!
-                    KUNCUserNotificationDisplayNotice(
-                                                      0,		// Timeout in seconds
-                                                      0,		// Flags (for later usage)
-                                                      "",		// iconPath (not supported yet)
-                                                      "",		// soundPath (not supported yet)
-                                                      "",		// localizationPath (AJ: removed hard coded path, rather not support it)
-                                                      "Unplug Header",		// the header
-                                                      "Unplug Notice",		// the notice - look in Localizable.strings
-                                                      "OK"); 
-				}
-			}
-		else
-			{
-			if (fCommInterface)	
-				{
-				if (fCommInterface != fDataInterface)
-					fCommInterface->close(this);
-				fCommInterface->release();
-				fCommInterface = NULL;	
-				}
+			IOLog("AJZaurusUSB::message - kIOMessageServiceIsTerminated ready=%d type=%lu\n", fReady, type);
 			
-			if (fDataInterface)	
-				{ 
-					fDataInterface->close(this);	
-					fDataInterface->release();
-					fDataInterface = NULL;	
-				}
-			
-			fpDevice->close(this); 	// need to close so we can get the free and stop calls, only if no sessions active (see putToSleep)
-			fpDevice = NULL;
-			}
-		
-		fTerminate = true;		// we're being terminated (unplugged)
-		return kIOReturnSuccess;
-        case kIOMessageServiceIsSuspended:
-		IOLog("AJZaurusUSB::message - kIOMessageServiceIsSuspended\n");
-		break;			
-        case kIOMessageServiceIsResumed: 	
-		IOLog("AJZaurusUSB::message - kIOMessageServiceIsResumed\n");
-		break;			
-        case kIOMessageServiceIsRequestingClose: 
-		IOLog("AJZaurusUSB::message - kIOMessageServiceIsRequestingClose\n"); 
-		break;
-        case kIOMessageServiceIsAttemptingOpen: 	
-		IOLog("AJZaurusUSB::message - kIOMessageServiceAttemptingOpen\n"); 
-		break;
-        case kIOMessageServiceWasClosed: 	
-		IOLog("AJZaurusUSB::message - kIOMessageServiceWasClosed\n"); 
-		break;
-        case kIOMessageServiceBusyStateChange: 	
-		IOLog("AJZaurusUSB::message - kIOMessageServiceBusyStateChange\n"); 
-		break;
-        case kIOMessageServicePropertyChange: 	
-		IOLog("AJZaurusUSB::message - kIOMessageServicePropertyChange\n"); 
-		break;
-		
-		// USB messages
-		
-        case kIOUSBMessagePortHasBeenResumed: 	
-		IOLog("AJZaurusUSB::message - kIOUSBMessagePortHasBeenResumed\n");
-		
-		// If the reads are dead try and resurrect them
-		
-		if (fCommDead && fCommPipe)
-			{
-			ior = fCommPipe->Read(fCommPipeMDP,
-								  5000,	// 5 seconds until timeout
-								  5000,
-								  fCommPipeMDP->getLength(),
-								  &fCommCompletionInfo,
-								  NULL);
-			//               ior = fCommPipe->Read(fCommPipeMDP, , NULL);
-			if (ior != kIOReturnSuccess)
+			if (fReady)
 				{
-				IOLog("AJZaurusUSB::message - Failed to queue Comm pipe read: %d\n", ior);
+				if (!fTerminate)		// Check if we're already being terminated
+					{ 
+						IOLog("AJZaurusUSB::message - hardcoded message!\n");
+						// NOTE! This call below depends on the hard coded path of this KEXT. Make sure
+						// that if the KEXT moves, this path is changed!
+						KUNCUserNotificationDisplayNotice(
+														  0,		// Timeout in seconds
+														  0,		// Flags (for later usage)
+														  "",		// iconPath (not supported yet)
+														  "",		// soundPath (not supported yet)
+														  "",		// localizationPath (AJ: removed hard coded path, rather not support it)
+														  "Unplug Header",		// the header
+														  "Unplug Notice",		// the notice - look in Localizable.strings
+														  "OK"); 
+					}
 				}
 			else
 				{
-				fCommDead = false;
+				if (fCommInterface)	
+					{
+					if (fCommInterface != fDataInterface)
+						fCommInterface->close(this);
+					fCommInterface->release();
+					fCommInterface = NULL;	
+					}
+				
+				if (fDataInterface)	
+					{ 
+						fDataInterface->close(this);	
+						fDataInterface->release();
+						fDataInterface = NULL;	
+					}
+				
+				fpDevice->close(this); 	// need to close so we can get the free and stop calls, only if no sessions active (see putToSleep)
+				fpDevice = NULL;
 				}
-			}
-		// and again...
-		if (fDataDead)
-			{
-			ior = fInPipe->Read(fPipeInMDP,
-								5000,	// 5 seconds until timeout
-								5000,
-								fPipeInMDP->getLength(),
-								&fReadCompletionInfo,
-								NULL);
-			if (ior != kIOReturnSuccess)
+			
+			fTerminate = true;		// we're being terminated (unplugged)
+			return kIOReturnSuccess;
+        case kIOMessageServiceIsSuspended:
+			IOLog("AJZaurusUSB::message - kIOMessageServiceIsSuspended\n");
+			break;			
+        case kIOMessageServiceIsResumed: 	
+			IOLog("AJZaurusUSB::message - kIOMessageServiceIsResumed\n");
+			break;			
+        case kIOMessageServiceIsRequestingClose: 
+			IOLog("AJZaurusUSB::message - kIOMessageServiceIsRequestingClose\n"); 
+			break;
+        case kIOMessageServiceIsAttemptingOpen: 	
+			IOLog("AJZaurusUSB::message - kIOMessageServiceAttemptingOpen\n"); 
+			break;
+        case kIOMessageServiceWasClosed: 	
+			IOLog("AJZaurusUSB::message - kIOMessageServiceWasClosed\n"); 
+			break;
+        case kIOMessageServiceBusyStateChange: 	
+			IOLog("AJZaurusUSB::message - kIOMessageServiceBusyStateChange\n"); 
+			break;
+        case kIOMessageServicePropertyChange: 	
+			IOLog("AJZaurusUSB::message - kIOMessageServicePropertyChange\n"); 
+			break;
+			
+			// USB messages
+			
+        case kIOUSBMessagePortHasBeenResumed: 	
+			IOLog("AJZaurusUSB::message - kIOUSBMessagePortHasBeenResumed\n");
+			
+			// If the reads are dead try and resurrect them
+			
+			if (fCommDead && fCommPipe)
 				{
-				IOLog("AJZaurusUSB::message - Failed to queue Data pipe read: %d\n", ior);
+				ior = fCommPipe->Read(fCommPipeMDP,
+									  5000,	// 5 seconds until timeout
+									  5000,
+									  fCommPipeMDP->getLength(),
+									  &fCommCompletionInfo,
+									  NULL);
+				//               ior = fCommPipe->Read(fCommPipeMDP, , NULL);
+				if (ior != kIOReturnSuccess)
+					{
+					IOLog("AJZaurusUSB::message - Failed to queue Comm pipe read: %d\n", ior);
+					}
+				else
+					{
+					fCommDead = false;
+					}
 				}
-			else 
+			// and again...
+			if (fDataDead)
 				{
-				fDataDead = false;
+				ior = fInPipe->Read(fPipeInMDP,
+									5000,	// 5 seconds until timeout
+									5000,
+									fPipeInMDP->getLength(),
+									&fReadCompletionInfo,
+									NULL);
+				if (ior != kIOReturnSuccess)
+					{
+					IOLog("AJZaurusUSB::message - Failed to queue Data pipe read: %d\n", ior);
+					}
+				else 
+					{
+					fDataDead = false;
+					}
 				}
-			}
-		
-		return kIOReturnSuccess;
+			
+			return kIOReturnSuccess;
         case kIOUSBMessageHubResumePort:
-		IOLog("AJZaurusUSB::message - kIOUSBMessageHubResumePort\n");
-		break;
-		// power
+			IOLog("AJZaurusUSB::message - kIOUSBMessageHubResumePort\n");
+			break;
+			// power
         case kIOMessageDeviceHasPoweredOn:
-		IOLog("AJZaurusUSB::message - kIOMessageDeviceHasPoweredOn\n");
-		break;
+			IOLog("AJZaurusUSB::message - kIOMessageDeviceHasPoweredOn\n");
+			break;
         case kIOMessageSystemWillSleep:
-		IOLog("AJZaurusUSB::message - kIOMessageSystemWillSleep\n");
-		break;
+			IOLog("AJZaurusUSB::message - kIOMessageSystemWillSleep\n");
+			break;
         case kIOMessageSystemHasPoweredOn:
-		IOLog("AJZaurusUSB::message - kIOMessageSystemHasPoweredOn\n");
-		break;
-		// any other
+			IOLog("AJZaurusUSB::message - kIOMessageSystemHasPoweredOn\n");
+			break;
+			// any other
         default:
-		IOLog("AJZaurusUSB::message - unknown message\n");
-		break;
+			IOLog("AJZaurusUSB::message - unknown message\n");
+			break;
 	}
 	IOSleep(20);    
     return kIOReturnUnsupported;

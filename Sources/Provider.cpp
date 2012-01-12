@@ -287,7 +287,7 @@ bool net_lucid_cake_driver_AJZaurusUSB::configureDevice(UInt8 numConfigs)
 				if(!fCommInterface->open(this, kIOServiceSeize))
 					{
 					IOLog("AJZaurusUSB::configureDevice - open comm interface failed again %p\n", fCommInterface);
-					fCommInterface = NULL;
+					fCommInterface = NULL;	// was not able to open again
 					return false;
 					}
 				}

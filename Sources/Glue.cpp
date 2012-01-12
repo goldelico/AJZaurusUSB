@@ -198,6 +198,7 @@ void net_lucid_cake_driver_AJZaurusUSB::dataReadComplete(void *obj, void *param,
 #endif   
         return;
         }
+
     if(rc == kIOReturnSuccess)	// If operation returned ok
         {
 		dLen=me->fPipeInMDP->getLength() - remaining;
@@ -207,28 +208,23 @@ void net_lucid_cake_driver_AJZaurusUSB::dataReadComplete(void *obj, void *param,
 //        LogData(kUSBIn, dlen, me->fPipeInBuffer);
         me->receivePacket(me->fPipeInBuffer, dLen);	// Move the incoming bytes up the stack
         } 
-    else
-        { // some error
-#if 1
-			if(rc == kIOUSBPipeStalled)
-				{
-				IOLog("AJZaurusUSB::dataReadComplete - err=kIOUSBPipeStalled\n");
-				// rc = me->clearPipeStall(me->fInPipe);
-				rc = me->fInPipe->ClearPipeStall(true);
-				if(rc != kIOReturnSuccess)
-					IOLog("AJZaurusUSB::dataReadComplete - clear pipe stall failed: %d %s\n", rc, me->fDataInterface->stringFromReturn(rc));
-				}
-			else if(rc == kIOUSBTransactionTimeout)
-				{
-				IOLog("AJZaurusUSB::dataReadComplete - Timeout err: %d %s\n", rc, me->fDataInterface->stringFromReturn(rc));
-				rc = me->fInPipe->ClearPipeStall(true);
-				if(rc != kIOReturnSuccess)
-					IOLog("AJZaurusUSB::dataReadComplete - clear pipe stall failed: %d %s\n", rc, me->fDataInterface->stringFromReturn(rc));
-				}
-			else
-				IOLog("AJZaurusUSB::dataReadComplete - IO err: %d %s\n", rc, me->fDataInterface->stringFromReturn(rc));
-#endif
-        }
+    else if(rc == kIOUSBPipeStalled)
+		{
+		IOLog("AJZaurusUSB::dataReadComplete - err=kIOUSBPipeStalled\n");
+		// rc = me->clearPipeStall(me->fInPipe);
+		rc = me->fInPipe->ClearPipeStall(true);
+		if(rc != kIOReturnSuccess)
+			IOLog("AJZaurusUSB::dataReadComplete - clear pipe stall failed: %d %s\n", rc, me->fDataInterface->stringFromReturn(rc));
+		}
+	else if(rc == kIOUSBTransactionTimeout)
+		{
+		IOLog("AJZaurusUSB::dataReadComplete - Timeout err: %d %s\n", rc, me->fDataInterface->stringFromReturn(rc));
+		rc = me->fInPipe->ClearPipeStall(true);
+		if(rc != kIOReturnSuccess)
+			IOLog("AJZaurusUSB::dataReadComplete - clear pipe stall failed: %d %s\n", rc, me->fDataInterface->stringFromReturn(rc));
+		}
+	else
+		IOLog("AJZaurusUSB::dataReadComplete - IO err: %d %s\n", rc, me->fDataInterface->stringFromReturn(rc));
 	
     // Queue the next read
 	
@@ -545,12 +541,16 @@ bool net_lucid_cake_driver_AJZaurusUSB::createNetworkInterface()
     if (fTimerSource == NULL)
         {
         IOLog("AJZaurusUSB::createNetworkInterface - Allocate Timer event source failed\n");
+		fTransmitQueue->release();
+		fTransmitQueue = NULL;
         return false;
         }
     
     if (fWorkLoop->addEventSource(fTimerSource) != kIOReturnSuccess)
         {
         IOLog("AJZaurusUSB::start - Add Timer event source failed\n");        
+		fTransmitQueue->release();
+		fTransmitQueue = NULL;
         return false;
         }
     
@@ -560,7 +560,10 @@ bool net_lucid_cake_driver_AJZaurusUSB::createNetworkInterface()
     
     if (!attachInterface((IONetworkInterface **)&fNetworkInterface, true))
         {	
-			IOLog("AJZaurusUSB::createNetworkInterface - attachInterface failed\n");      
+			IOLog("AJZaurusUSB::createNetworkInterface - attachInterface failed\n");
+			fWorkLoop->removeEventSource(fTimerSource);
+			fTransmitQueue->release();
+			fTransmitQueue = NULL;
 			return false;
         }
     
