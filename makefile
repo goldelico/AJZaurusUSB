@@ -1,4 +1,4 @@
-VERSION_AJZaurusUSB=0.6.0
+VERSION_AJZaurusUSB=0.6.2
 
 -include ../../../Versions.def	# override if available
 
@@ -32,9 +32,12 @@ patch-version-number:
 AJZaurusUSB: patch-version-number
 	@echo "Building AJZaurusUSB $(VERSION_AJZaurusUSB)"
 	(sudo rm -rf build pkg && mkdir pkg && xcodebuild -target AJZaurusUSB)
+	# set permissions
 	sudo chown -R root pkg/AJZaurusUSB.kext
 	sudo chgrp -R wheel pkg/AJZaurusUSB.kext
 	sudo chmod -R go-w pkg/AJZaurusUSB.kext
+	# check
+	sudo kextlibs -undef-symbols -multdef-symbols pkg/AJZaurusUSB.kext
 
 pkg: AJZaurusUSB
 	/Developer/usr/bin/packagemaker --doc AJZaurusUSB.pmdoc --version $(VERSION_AJZaurusUSB) --target 10.4 --out AJZaurusUSB.pkg

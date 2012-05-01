@@ -971,7 +971,7 @@ bool net_lucid_cake_driver_AJZaurusUSB::USBTransmitPacket(mbuf_t packet)
         { // try to get a buffer
 			for(poolIndx=0; poolIndx<kOutBufPool; poolIndx++)
 				{
-				if(fPipeOutBuff[poolIndx].m == NULL)
+				if(!fPipeOutBuff[poolIndx].inuse)
 					break;  // got one
 				}
 			if(poolIndx<kOutBufPool)
@@ -989,7 +989,7 @@ bool net_lucid_cake_driver_AJZaurusUSB::USBTransmitPacket(mbuf_t packet)
 			IOLog("AJZaurusUSB::USBTransmitPacket - Waiting %d-th time for output buffer\n", tryCount);
 			IOSleep(1);	// sleep 1 second
         }
-    fPipeOutBuff[poolIndx].m = packet;
+    fPipeOutBuff[poolIndx].inuse = true;	// now in use
     ++fDataCount;
     if(fDataCount > kOutBufPool-10)
         IOLog("AJZaurusUSB::USBTransmitPacket - Warning %ld of %d output buffers in use!\n", fDataCount, kOutBufPool);
@@ -1064,7 +1064,7 @@ bool net_lucid_cake_driver_AJZaurusUSB::USBTransmitPacket(mbuf_t packet)
                     fpNetStats->outputErrors++;
                 IOSimpleLockLock(fLock);
                 --fDataCount;
-                fPipeOutBuff[poolIndx].m = NULL;
+                fPipeOutBuff[poolIndx].inuse = false;
                 IOSimpleLockUnlock(fLock);
                 return false;
                 }
@@ -1073,7 +1073,7 @@ bool net_lucid_cake_driver_AJZaurusUSB::USBTransmitPacket(mbuf_t packet)
             { // other error
 				IOSimpleLockLock(fLock);
 				--fDataCount;
-				fPipeOutBuff[poolIndx].m = NULL;
+				fPipeOutBuff[poolIndx].inuse = false;
 				IOSimpleLockUnlock(fLock);
 				return false;
             }
@@ -1371,7 +1371,8 @@ void net_lucid_cake_driver_AJZaurusUSB::receivePacket(UInt8 *packet, UInt32 size
     m = allocatePacket(size);
     if (m)
         {
-        bcopy(packet, (unsigned char*) mbuf_data(m), size);
+  //      bcopy(packet, (unsigned char*) mbuf_data(m), size);
+		mbuf_copyback(m, 0, size, packet, MBUF_DONTWAIT);
         submit = fNetworkInterface->inputPacket(m, size);
 #if 0
         IOLog("AJZaurusUSB::receivePacket - %lu Packets submitted to IP layer\n", submit);

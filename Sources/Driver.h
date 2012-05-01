@@ -249,8 +249,8 @@ typedef struct
 {
     IOBufferMemoryDescriptor	*pipeOutMDP;
     UInt8						*pipeOutBuffer;
-    mbuf_t						m;
 	IOUSBCompletion				writeCompletionInfo;
+    bool						inuse;
 } pipeOutBuffers;
 
 #define super IOEthernetController

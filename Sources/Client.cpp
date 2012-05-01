@@ -161,7 +161,7 @@ bool net_lucid_cake_driver_AJZaurusUSB::init(OSDictionary *properties)
         { // initialize output buffer reference block
 			fPipeOutBuff[i].pipeOutMDP = NULL;
 			fPipeOutBuff[i].pipeOutBuffer = NULL;
-			fPipeOutBuff[i].m = NULL;
+			fPipeOutBuff[i].inuse = false;
         }
     
     fLock = IOSimpleLockAlloc();
@@ -700,7 +700,7 @@ void net_lucid_cake_driver_AJZaurusUSB::timeoutOccurred(IOTimerEventSource *time
             rc = fpDevice->DeviceRequest(STREQ, &fStatsCompletionInfo);
             if (rc != kIOReturnSuccess)
                 {
-                IOLog("AJZaurusUSB::timeoutOccurred - Error issueing DeviceRequest for %d: %d %s\n", STREQ->bRequest, rc, me->stringFromReturn(rc));
+                IOLog("AJZaurusUSB::timeoutOccurred - Error issueing DeviceRequest for %d: %d %s\n", STREQ->bRequest, rc, stringFromReturn(rc));
                 IOFree(STREQ, sizeof(IOUSBDevRequest));
                 }
             else

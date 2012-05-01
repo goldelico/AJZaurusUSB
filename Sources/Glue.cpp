@@ -303,7 +303,7 @@ void net_lucid_cake_driver_AJZaurusUSB::dataWriteComplete(void *obj, void *param
         if(stalled)
             IOLog("AJZaurusUSB::dataWriteComplete - was stalled\n");
         me->fOutputStalled = false; // no longer...
-		me->fPipeOutBuff[poolIndx].m = NULL;    // free up buffer
+		me->fPipeOutBuff[poolIndx].inuse = false;    // free up buffer
         IOSimpleLockUnlock(me->fLock);
         } 
     else 
@@ -347,6 +347,7 @@ void net_lucid_cake_driver_AJZaurusUSB::dataWriteComplete(void *obj, void *param
 
 void net_lucid_cake_driver_AJZaurusUSB::merWriteComplete(void *obj, void *param, IOReturn rc, UInt32 remaining)
 {
+    net_lucid_cake_driver_AJZaurusUSB	*me = (net_lucid_cake_driver_AJZaurusUSB *)obj;
     IOUSBDevRequest	*MER = (IOUSBDevRequest*)param;
     UInt16		dataLen;
     
