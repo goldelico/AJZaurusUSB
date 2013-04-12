@@ -554,23 +554,23 @@ UInt32 net_lucid_cake_driver_AJZaurusUSB::outputPacket(mbuf_t pkt, void *param)
 	if(!pkt)
         {
         IOLog("AJZaurusUSB::outputPacket(NULL)\n");
+		return ret;
 		}
-	else if(!fLinkStatus)
+	if(!fLinkStatus)
         {
         IOLog("AJZaurusUSB::outputPacket(%p) - link is down (%d)\n", pkt, fLinkStatus);
         if(fOutputErrsOK)
             fpNetStats->outputErrors++;
-        freePacket(pkt);
         } 
     else if(!USBTransmitPacket(pkt))
         { // wasn't able to transmit
 			ret = kIOReturnOutputStall;
 			// ret = kIOReturnOutputDropped;
 			IOLog("AJZaurusUSB::outputPacket(%p) - packet dropped\n", pkt);
-			// If the driver returns kIOReturnDropped, it should also put the mbuf_t back into the network stack
-			// ’s common pool by invoking the superclass’s freePacket function.   
-			freePacket(pkt);
         }
+	// If the driver returns kIOReturnDropped, it should also put the mbuf_t back into the network stack's
+	// common pool by invoking the superclass’s freePacket function.   
+	freePacket(pkt);
     return ret;
 }/* end outputPacket */
 

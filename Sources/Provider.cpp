@@ -1070,7 +1070,7 @@ bool net_lucid_cake_driver_AJZaurusUSB::USBTransmitPacket(mbuf_t packet)
                 }
             }
         else
-            { // other error
+            { // other error - drop transmit packet
 				IOSimpleLockLock(fLock);
 				--fDataCount;
 				fPipeOutBuff[poolIndx].inuse = false;
@@ -1079,7 +1079,6 @@ bool net_lucid_cake_driver_AJZaurusUSB::USBTransmitPacket(mbuf_t packet)
             }
         }
     
-    freePacket(packet);
     if (fOutputPktsOK)
         fpNetStats->outputPackets++;
     
