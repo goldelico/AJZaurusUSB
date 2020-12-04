@@ -45,9 +45,13 @@ fi
 
 sudo pfctl -F nat
 
-#echo "nat log on $INTERFACE from $DEVICE to any -> ($INTERFACE)
-#nat log on en0 from $DEVICE to any -> (en0)" | sudo pfctl -N -f - -e
-echo "nat log on $INTERFACE from $DEVICE to any -> ($INTERFACE)" | sudo pfctl -N -f - -e
+(
+echo "nat log on $INTERFACE from $DEVICE to any -> ($INTERFACE)"
+INTERFACE=en0
+echo "nat log on $INTERFACE from $DEVICE to any -> ($INTERFACE)"
+INTERFACE=en3
+echo "nat log on $INTERFACE from $DEVICE to any -> ($INTERFACE)"
+) | sudo pfctl -N -f - -e
 sudo pfctl -a '*' -s nat
 
 sudo sysctl -w net.inet.ip.forwarding=1
