@@ -1,5 +1,66 @@
 #! /bin/bash
 
+SERVERADMIN=/Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin
+UUID=com.goldelico.ajzaurus
+LAUNCHDAEMON=/Library/LaunchDaemons/$UUID.plist
+
+case "$0" in
+	/* )
+		SCRIPTPATH="$0"
+		;;
+	./* )
+		SCRIPTPATH="$PWD/$0"
+		;;
+	* )	# should search in $PATH
+		echo "can't install $0";
+		exit 1
+		;;
+esac
+
+echo "+++ running $SCRIPTPATH"
+date
+
+if [ ! -r "$LAUNCHDAEMON" ]
+then
+	echo "+++ install $LAUNCHDAEMON for $SCRIPTPATH"
+	launchctl stop $UUID
+	launchctl unload $LAUNCHDAEMON
+
+	cat <<END >/tmp/$UUID
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>$UUID</string>
+        <key>RunAtLoad</key>
+        <true/>
+	<key>ProgramArguments</key>
+	<array>
+		<string>$SCRIPTPATH</string>
+	</array>
+	<key>StandardErrorPath</key>
+	<string>/tmp/$UUID.stderr</string>
+	<key>StandardOutPath</key>
+	<string>/tmp/$UUID.stdout</string>
+	<key>StartCalendarInterval</key>
+	<dict>
+		<key>Hour</key>
+		<integer>3</integer>
+		<key>Minute</key>
+		<integer>47</integer>
+	</dict>
+	<key>Description</key>
+	<string>Update ip-forwarding once per day and at boot</string>
+</dict>
+</plist>
+END
+	sudo cp /tmp/$UUID $LAUNCHDAEMON
+	launchctl load $LAUNCHDAEMON
+	# will trigger a first update
+	launchctl start $UUID
+fi
+
 # based on
 # http://apple.stackexchange.com/questions/228936/using-server-5-0-15-to-share-internet-without-internet-sharing
 # https://superuser.com/questions/931827/sharing-openvpn-on-mac-os-x-yosemite
