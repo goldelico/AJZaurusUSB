@@ -33,7 +33,7 @@ else
 		fi
 	done < <(networksetup -listnetworkserviceorder | grep 'Hardware Port')
 
-	if [ -n $CURRENT ]
+	if [ -n "$CURRENT" ]
 	then
 		echo Sharing over: $CURRENT $INTERFACE
 	else
