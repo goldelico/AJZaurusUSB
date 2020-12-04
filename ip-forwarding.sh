@@ -6,7 +6,7 @@
 
 DEVICE=192.168.0.202	# Letux device
 
-if ifconfig "utun0" >/dev/null
+if ifconfig "utun0" >/dev/null 2>&1
 then # VPN hides highest priority active network
 	CURRENT="tunnelblick"
 	INTERFACE="utun0"
