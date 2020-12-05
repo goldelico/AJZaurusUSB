@@ -26,21 +26,21 @@ esac
 echo "+++ running $SCRIPTPATH"
 date
 
-if [ ! -r "$LAUNCHDAEMON" ]
+if [ ! -r "$LAUNCHDAEMON" -o "$SCRIPTPATH" -nt "$LAUNCHDAEMON" ]
 then
 	echo "+++ install $LAUNCHDAEMON for $SCRIPTPATH"
 	launchctl stop $UUID
 	launchctl unload $LAUNCHDAEMON
 
-	cat <<END >/tmp/$UUID
+	cat <<END >$LAUNCHDAEMON
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
 	<key>Label</key>
 	<string>$UUID</string>
-        <key>RunAtLoad</key>
-        <true/>
+	<key>LowPriorityIO</key>
+	<true/>
 	<key>ProgramArguments</key>
 	<array>
 		<string>$SCRIPTPATH</string>
@@ -49,6 +49,14 @@ then
 	<string>/tmp/$UUID.stderr</string>
 	<key>StandardOutPath</key>
 	<string>/tmp/$UUID.stdout</string>
+	<key>WatchPaths</key>
+	<array>
+		<string>/etc/resolv.conf</string>
+		<string>/var/run/resolv.conf</string>
+		<string>/private/var/run/resolv.conf</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
 	<key>StartCalendarInterval</key>
 	<dict>
 		<key>Hour</key>
@@ -57,11 +65,10 @@ then
 		<integer>47</integer>
 	</dict>
 	<key>Description</key>
-	<string>Update ip-forwarding once per day and at boot</string>
+	<string>Update ip-forwarding on network changes, once per day and at boot</string>
 </dict>
 </plist>
 END
-	cp /tmp/$UUID $LAUNCHDAEMON
 	launchctl load $LAUNCHDAEMON
 	# will trigger a first update
 	launchctl start $UUID
