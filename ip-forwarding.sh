@@ -1,4 +1,10 @@
-#! /bin/bash
+#!/bin/bash
+
+if [ "$EUID" != 0 ]
+	then
+	echo "Please run as root"
+	exit
+fi
 
 SERVERADMIN=/Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin
 UUID=com.goldelico.ajzaurus
@@ -55,7 +61,7 @@ then
 </dict>
 </plist>
 END
-	sudo cp /tmp/$UUID $LAUNCHDAEMON
+	cp /tmp/$UUID $LAUNCHDAEMON
 	launchctl load $LAUNCHDAEMON
 	# will trigger a first update
 	launchctl start $UUID
@@ -104,7 +110,7 @@ else
 
 fi
 
-sudo pfctl -F nat
+pfctl -F nat
 
 (
 echo "nat log on $INTERFACE from $DEVICE to any -> ($INTERFACE)"
@@ -112,14 +118,14 @@ INTERFACE=en0
 echo "nat log on $INTERFACE from $DEVICE to any -> ($INTERFACE)"
 INTERFACE=en3
 echo "nat log on $INTERFACE from $DEVICE to any -> ($INTERFACE)"
-) | sudo pfctl -N -f - -e
-sudo pfctl -a '*' -s nat
+) | pfctl -N -f - -e
+pfctl -a '*' -s nat
 
-sudo sysctl -w net.inet.ip.forwarding=1
-sudo sysctl -w net.inet.ip.fw.enable=1
-# sudo sysctl -w net.inet6.ip6.forwarding=1
+sysctl -w net.inet.ip.forwarding=1
+sysctl -w net.inet.ip.fw.enable=1
+# sysctl -w net.inet6.ip6.forwarding=1
 
 ## logging
 # ifconfig pflog1 create
-# sudo tcpdump -n -e -ttt -i pflog1
-# sudo tcpdump -n -e -ttt -i $INTERFACE
+# tcpdump -n -e -ttt -i pflog1
+# tcpdump -n -e -ttt -i $INTERFACE
