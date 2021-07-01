@@ -72,6 +72,7 @@ END
 	launchctl load $LAUNCHDAEMON
 	# will trigger a first update
 	launchctl start $UUID
+	echo "+++ installed"
 fi
 
 # based on
@@ -80,16 +81,13 @@ fi
 
 DEVICE=192.168.0.202	# Letux device
 
-if ifconfig "utun0" >/dev/null 2>&1
-then # VPN hides highest priority active network
-	CURRENT="tunnelblick"
-	INTERFACE="utun0"
-
-else
-
 # locate highest priority active service
+# always start with utun0 (Goldelico Server) - if active
 # found at https://apple.stackexchange.com/questions/191879/how-to-find-the-currently-connected-network-service-from-the-command-line
 # and improved...
+
+CURRENT=""
+INTERFACE=unknown
 
 	while read LINE
 	do
@@ -105,31 +103,31 @@ else
 				break 2	# take first we find
 			fi
 		fi
-	done < <(networksetup -listnetworkserviceorder | grep 'Hardware Port')
+	done < <(echo utun0; networksetup -listnetworkserviceorder | grep 'Hardware Port')
 
-	if [ -n "$CURRENT" ]
-	then
-		echo Sharing over: $CURRENT $INTERFACE
-	else
+if ! [ -n "$CURRENT" ]
+then
 		>&2 echo "Could not find current service"
 		exit 1
-	fi
-
 fi
+
+echo Sharing $DEVICE over: $CURRENT $INTERFACE
 
 pfctl -F nat
 
 (
 echo "nat log on $INTERFACE from $DEVICE to any -> ($INTERFACE)"
-INTERFACE=en0
-echo "nat log on $INTERFACE from $DEVICE to any -> ($INTERFACE)"
-INTERFACE=en3
-echo "nat log on $INTERFACE from $DEVICE to any -> ($INTERFACE)"
+#INTERFACE=en0
+#echo "nat log on $INTERFACE from $DEVICE to any -> ($INTERFACE)"
+#INTERFACE=en3
+#echo "nat log on $INTERFACE from $DEVICE to any -> ($INTERFACE)"
+#INTERFACE=en4
+#echo "nat log on $INTERFACE from $DEVICE to any -> ($INTERFACE)"
 ) | pfctl -N -f - -e
 pfctl -a '*' -s nat
 
 sysctl -w net.inet.ip.forwarding=1
-sysctl -w net.inet.ip.fw.enable=1
+sysctl -w net.inet.ip.fw.enable=1	# may fail on newer macOS kernels
 # sysctl -w net.inet6.ip6.forwarding=1
 
 ## logging
